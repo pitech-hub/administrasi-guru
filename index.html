@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - MTs Negeri 1 Lamongan (Google Sheets)</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+      /* CSS tetap sama seperti sebelumnya */
+      :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #64748b;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --info: #3b82f6;
+        --bg-body: #f1f5f9;
+        --bg-card: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --transition: all 0.2s ease-in-out;
+        --sidebar-width: 260px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+      body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        display: flex;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* --- Sidebar & Layout --- */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        color: white;
+        position: fixed;
+        height: 100vh;
+        left: 0;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        transition: var(--transition);
+      }
+      .sidebar-brand {
+        height: 70px;
+        display: flex;
+        align-items: center;
+        padding: 0 25px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sidebar-brand i {
+        margin-right: 12px;
+        color: var(--primary);
+      }
+      .nav-menu {
+        list-style: none;
+        padding: 20px 10px;
+        flex-grow: 1;
+        overflow-y: auto;
+      }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: #94a3b8;
+        text-decoration: none;
+        border-radius: var(--radius);
+        transition: var(--transition);
+        font-weight: 500;
+        cursor: pointer;
+        margin-bottom: 5px;
+      }
+      .nav-link i {
+        width: 25px;
+        text-align: center;
+        margin-right: 10px;
+      }
+      .nav-link:hover,
+      .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+        border-left: 4px solid var(--primary);
+      }
+
+      .main-wrapper {
+        margin-left: var(--sidebar-width);
+        width: calc(100% - var(--sidebar-width));
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+      }
+      .topbar {
+        height: 70px;
+        background: var(--bg-card);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        flex-shrink: 0;
+      }
+      .content {
+        padding: 30px;
+        flex-grow: 1;
+      }
+
+      /* --- Components --- */
+      .page-section {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .page-section.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .data-card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 25px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 20px;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+      .btn-success {
+        background: var(--success);
+        color: white;
+      }
+      .btn-danger {
+        background: var(--danger);
+        color: white;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+      .btn-info {
+        background: var(--info);
+        color: white;
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid #cbd5e1;
+        color: var(--text-main);
+      }
+
+      .form-control,
+      .form-select {
+        padding: 10px 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        transition: var(--transition);
+        width: 100%;
+      }
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--primary);
+      }
+
+      .table-responsive {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+      }
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      th {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        background: #f8fafc;
+      }
+
+      .badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge-L {
+        background: #dbeafe;
+        color: var(--primary);
+      }
+      .badge-P {
+        background: #fce7f3;
+        color: #db2777;
+      }
+
+      /* Modal */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-box {
+        background: white;
+        width: 500px;
+        max-width: 90%;
+        padding: 30px;
+        border-radius: var(--radius);
+        animation: slideUp 0.3s ease;
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .toast-container {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .toast {
+        min-width: 300px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        border-left: 5px solid;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        animation: slideLeft 0.3s ease;
+      }
+      .toast.success {
+        border-color: var(--success);
+      }
+      .toast.error {
+        border-color: var(--danger);
+      }
+      @keyframes slideLeft {
+        from {
+          transform: translateX(100%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 992px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        .sidebar.active {
+          transform: translateX(0);
+        }
+        .main-wrapper {
+          margin-left: 0;
+          width: 100%;
+        }
+      }
+      .toggle-btn {
+        display: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+      @media (max-width: 992px) {
+        .toggle-btn {
+          display: block;
+        }
+      }
+
+      /* Tambahkan CSS ini di dalam tag <style> */
+      .sidebar-overlay {
+        display: none; /* Sembunyikan secara default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Latar belakang gelap transparan */
+        z-index: 49; /* Di bawah sidebar (z-index 50), tapi di atas konten */
+        backdrop-filter: blur(2px);
+      }
+
+      .sidebar-overlay.active {
+        display: block; /* Muncul saat menu dibuka */
+      }
+      /* Style untuk tombol saat di-disabled */
+      .btn:disabled {
+        background-color: #cbd5e1; /* Warna abu-abu */
+        color: #64748b;
+        cursor: not-allowed; /* Kursor silang */
+        pointer-events: none; /* Tidak bisa diklik */
+      }
+
+      /* Animasi putar untuk icon loading */
+      .fa-spin {
+        animation: fa-spin 2s infinite linear;
+      }
+      @keyframes fa-spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="sidebar-overlay"
+      class="sidebar-overlay"
+      onclick="toggleSidebar()"
+    ></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <i class="fas fa-school"></i> MTsN 1 Lamongan
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="#" class="nav-link active" onclick="nav('dashboard', this)"
+            ><i class="fas fa-home"></i> Dashboard</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" onclick="nav('data-guru', this)"
+            ><i class="fas fa-chalkboard-teacher"></i> Data Guru</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" onclick="nav('data-siswa', this)"
+            ><i class="fas fa-user-graduate"></i> Data Siswa</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" onclick="nav('jurnal', this)">
+            <i class="fas fa-book-open"></i> Jurnal Mengajar
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div style="display: flex; align-items: center">
+          <i class="fas fa-bars toggle-btn" onclick="toggleSidebar()"></i>
+          <h3
+            style="font-size: 1.2rem; font-weight: 600; margin-left: 15px"
+            id="page-title"
+          >
+            Dashboard
+          </h3>
+        </div>
+        <div
+          class="user-profile"
+          style="display: flex; align-items: center; gap: 10px"
+        >
+          <span>Admin</span>
+          <img
+            src="https://picsum.photos/seed/admin/40/40"
+            class="avatar"
+            style="width: 40px; height: 40px; border-radius: 50%"
+          />
+        </div>
+      </header>
+
+      <main class="content">
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page-section active">
+          <div class="data-card">
+            <h4>Selamat Datang</h4>
+            <p>Sistem terhubung ke Google Sheets sebagai database utama.</p>
+            <br />
+            <button class="btn btn-primary" onclick="fetchDataFromSheets()">
+              <i class="fas fa-sync"></i> Refresh Data dari Sheets
+            </button>
+          </div>
+        </section>
+
+        <!-- DATA GURU (No HP Removed) -->
+        <section id="data-guru" class="page-section">
+          <div class="data-card">
+            <div class="toolbar">
+              <div class="toolbar-left">
+                <button
+                  class="btn btn-primary"
+                  onclick="openModal('modal-guru')"
+                >
+                  <i class="fas fa-plus"></i> Tambah Guru
+                </button>
+
+                <!-- TOMBOL UPLOAD EXCEL GURU -->
+                <input
+                  type="file"
+                  id="upload-guru"
+                  accept=".xlsx, .xls"
+                  style="display: none"
+                  onchange="handleBulkUpload(this, 'guru')"
+                />
+                <button
+                  class="btn btn-success"
+                  onclick="document.getElementById('upload-guru').click()"
+                >
+                  <i class="fas fa-file-excel"></i> Upload Excel
+                </button>
+              </div>
+              <button class="btn btn-outline" onclick="exportToExcel('guru')">
+                <i class="fas fa-download"></i> Download Excel
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table id="table-guru">
+                <thead>
+                  <tr>
+                    <th>NIP</th>
+                    <th>Nama Lengkap</th>
+                    <th>Mata Pelajaran</th>
+                    <th style="text-align: right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="4" style="text-align: center">
+                      Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- DATA SISWA -->
+        <section id="data-siswa" class="page-section">
+          <div class="data-card">
+            <div class="toolbar">
+              <div class="toolbar-left">
+                <button
+                  class="btn btn-primary"
+                  onclick="openModal('modal-siswa')"
+                >
+                  <i class="fas fa-plus"></i> Tambah Siswa
+                </button>
+
+                <!-- TOMBOL UPLOAD EXCEL SISWA -->
+                <input
+                  type="file"
+                  id="upload-siswa"
+                  accept=".xlsx, .xls"
+                  style="display: none"
+                  onchange="handleBulkUpload(this, 'siswa')"
+                />
+                <button
+                  class="btn btn-success"
+                  onclick="document.getElementById('upload-siswa').click()"
+                >
+                  <i class="fas fa-file-excel"></i> Upload Excel
+                </button>
+              </div>
+              <button class="btn btn-outline" onclick="exportToExcel('siswa')">
+                <i class="fas fa-download"></i> Download Excel
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table id="table-siswa">
+                <thead>
+                  <tr>
+                    <th>NISN</th>
+                    <th>Nama Lengkap</th>
+                    <th>Kelas</th>
+                    <th>L/P</th>
+                    <th style="text-align: right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="5" style="text-align: center">
+                      Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. JURNAL MENGAJAR -->
+        <section id="jurnal" class="page-section">
+          <div class="data-card">
+            <div class="toolbar">
+              <div
+                class="toolbar-left"
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 10px;
+                  align-items: center;
+                  flex-grow: 1;
+                "
+              >
+                <button class="btn btn-primary" onclick="openModalJurnal()">
+                  <i class="fas fa-plus"></i> Tambah
+                </button>
+
+                <!-- FILTERS -->
+                <select
+                  id="filter-guru"
+                  class="form-select"
+                  onchange="renderJurnalTable()"
+                  style="width: 150px"
+                >
+                  <option value="">Semua Guru</option>
+                </select>
+
+                <select
+                  id="filter-mapel"
+                  class="form-select"
+                  onchange="renderJurnalTable()"
+                  style="width: 150px"
+                >
+                  <option value="">Semua Mapel</option>
+                  <option value="Al-Qur'an">Al-Qur'an</option>
+                  <option value="Akidah">Akidah</option>
+                  <option value="Fikih">Fikih</option>
+                  <option value="SKI">SKI</option>
+                  <option value="Matematika">Matematika</option>
+                  <option value="Bahasa Arab">Bahasa Arab</option>
+                  <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                  <option value="Bahasa Inggris">Bahasa Inggris</option>
+                  <option value="Bahasa Inggris">Bahasa Jawa</option>
+                  <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+                  <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+                  <option value="PKN">PKN</option>
+                  <option value="Seni Budaya/Prakarya">
+                    Seni Budaya/Prakarya
+                  </option>
+                  <option value="PJOK">PJOK</option>
+                  <option value="Informatika">Informatika</option>
+                </select>
+
+                <select
+                  id="filter-kelas"
+                  class="form-select"
+                  onchange="renderJurnalTable()"
+                  style="width: 150px"
+                >
+                  <option value="">Semua Kelas</option>
+                  <option value="7A">7A</option>
+                  <option value="7B">7B</option>
+                  <option value="7C">7C</option>
+                  <option value="7D">7D</option>
+                  <option value="7E">7E</option>
+                  <option value="8A">8A</option>
+                  <option value="8B">8B</option>
+                  <option value="8C">8C</option>
+                  <option value="8D">8D</option>
+                  <option value="8E">8E</option>
+                  <option value="9A">9A</option>
+                  <option value="9B">9B</option>
+                  <option value="9C">9C</option>
+                  <option value="9D">9D</option>
+                  <option value="9E">9E</option>
+                </select>
+
+                <input
+                  type="month"
+                  id="filter-bulan"
+                  class="form-control"
+                  onchange="renderJurnalTable()"
+                  style="width: 160px"
+                />
+              </div>
+
+              <div class="toolbar-right">
+                <button class="btn btn-outline" onclick="exportJurnalToExcel()">
+                  <i class="fas fa-file-excel"></i> Download Excel
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table id="table-jurnal">
+                <thead>
+                  <tr>
+                    <th width="10%">Tanggal</th>
+                    <th width="8%">Jam</th>
+                    <th>Guru</th>
+                    <th width="10%">Kelas/Mapel</th>
+                    <th>Kegiatan</th>
+                    <th width="15%">Penugasan</th>
+                    <th width="15%">Absensi</th>
+                    <th style="text-align: right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="8" style="text-align: center">
+                      Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- MODAL JURNAL (POP UP) -->
+        <div
+          id="modal-jurnal"
+          class="modal-overlay"
+          onclick="if(event.target === this) closeModalJurnal()"
+        >
+          <div class="modal-box">
+            <div class="modal-header">
+              <h3 class="modal-title" id="modal-jurnal-title">
+                Tambah Jurnal Mengajar
+              </h3>
+              <!-- <button
+                class="close-modal"
+                onclick="closeModalJurnal()"
+                style="
+                  border: none;
+                  background: none;
+                  font-size: 1.5rem;
+                  cursor: pointer;
+                "
+              >
+                &times;
+              </button> -->
+            </div>
+            <br />
+            <form id="form-jurnal" onsubmit="saveJurnal(event)">
+              <input type="hidden" id="jurnal-id" />
+
+              <div class="form-group">
+                <label class="form-label">Nama Guru</label>
+                <select id="jurnal-guru" class="form-select" required>
+                  <option value="">-- Pilih Guru --</option>
+                </select>
+              </div>
+
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 1fr;
+                  gap: 10px;
+                "
+              >
+                <div class="form-group">
+                  <label class="form-label">Kelas</label>
+                  <select id="jurnal-kelas" class="form-select" required>
+                    <option value="7A">7A</option>
+                    <option value="7B">7B</option>
+                    <option value="7C">7C</option>
+                    <option value="7D">7D</option>
+                    <option value="7E">7E</option>
+                    <option value="7F">7F</option>
+                    <option value="7G">7G</option>
+                    <option value="7H">7H</option>
+                    <option value="7I">7I</option>
+                    <option value="7J">7J</option>
+                    <option value="7K">7K</option>
+                    <option value="7L">7L</option>
+                    <option value="7M">7M</option>
+                    <option value="7N">7N</option>
+                    <option value="7O">7O</option>
+                    <option value="7P">7P</option>
+                    <option disabled>---</option>
+                    <option value="8A">8A</option>
+                    <option value="8B">8B</option>
+                    <option value="8C">8C</option>
+                    <option value="8D">8D</option>
+                    <option value="8E">8E</option>
+                    <option value="8F">8F</option>
+                    <option value="8G">8G</option>
+                    <option value="8H">8H</option>
+                    <option value="8I">8I</option>
+                    <option value="8J">8J</option>
+                    <option value="8K">8K</option>
+                    <option value="8L">8L</option>
+                    <option value="8M">8M</option>
+                    <option value="8N">8N</option>
+                    <option value="8O">8O</option>
+                    <option value="8P">8P</option>
+                    <option disabled>---</option>
+                    <option value="9A">9A</option>
+                    <option value="9B">9B</option>
+                    <option value="9C">9C</option>
+                    <option value="9D">9D</option>
+                    <option value="9E">9E</option>
+                    <option value="9F">9F</option>
+                    <option value="9G">9G</option>
+                    <option value="9H">9H</option>
+                    <option value="9I">9I</option>
+                    <option value="9J">9J</option>
+                    <option value="9K">9K</option>
+                    <option value="9L">9L</option>
+                    <option value="9M">9M</option>
+                    <option value="9N">9N</option>
+                    <option value="9O">9O</option>
+                    <option value="9P">9P</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Jam Ke-</label>
+                  <select id="jurnal-jamke" class="form-select" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Mapel</label>
+                  <select id="jurnal-mapel" class="form-select" required>
+                    <option value="">-- Pilih Mapel --</option>
+                    <option value="Al-Qur'an">Al-Qur'an</option>
+                    <option value="Akidah">Akidah</option>
+                    <option value="Fikih">Fikih</option>
+                    <option value="SKI">SKI</option>
+                    <option value="Matematika">Matematika</option>
+                    <option value="Bahasa Arab">Bahasa Arab</option>
+                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                    <option value="Bahasa Jawa">Bahasa Jawa</option>
+                    <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+                    <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+                    <option value="PKN">PKN</option>
+                    <option value="Seni Budaya/Prakarya">
+                      Seni Budaya/Prakarya
+                    </option>
+                    <option value="PJOK">PJOK</option>
+                    <option value="Informatika">Informatika</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tanggal</label>
+                <input
+                  type="date"
+                  id="jurnal-tanggal"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Kegiatan / Materi</label>
+                <textarea
+                  id="jurnal-materi"
+                  class="form-control"
+                  rows="3"
+                  required
+                  placeholder="Ringkasan materi..."
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Penugasan</label>
+                <textarea
+                  id="jurnal-tugas"
+                  class="form-control"
+                  rows="2"
+                  placeholder="Deskripsi tugas..."
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Siswa Tidak Hadir (Nama & Ket)</label>
+                <input
+                  type="text"
+                  id="jurnal-absensi"
+                  class="form-control"
+                  placeholder="Contoh: Ahmad (S), Budi (I)"
+                />
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%">
+                Simpan Data
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- MODAL GURU (No HP) -->
+    <div id="modal-guru" class="modal-overlay">
+      <div class="modal-box">
+        <div
+          class="modal-header"
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+          "
+        >
+          <h3 id="modal-guru-title">Tambah Guru</h3>
+          <button
+            class="close-modal"
+            onclick="closeModal('modal-guru')"
+            style="
+              border: none;
+              background: none;
+              font-size: 1.5rem;
+              cursor: pointer;
+            "
+          >
+            &times;
+          </button>
+        </div>
+        <form id="form-guru" onsubmit="saveGuru(event)">
+          <input type="hidden" id="guru-id" />
+          <div class="form-group">
+            <label class="form-label">NIP</label>
+            <!-- oninput mencegah input selain angka -->
+            <input
+              type="text"
+              id="guru-nip"
+              class="form-control"
+              required
+              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" id="guru-nama" class="form-control" required />
+          </div>
+          <!-- GANTI BAGIAN INPUT MAPEL DI MODAL GURU -->
+          <div class="form-group">
+            <label class="form-label">Mata Pelajaran</label>
+            <select id="guru-mapel" class="form-select" required>
+              <option value="">-- Pilih Mapel --</option>
+              <option value="Al-Qur'an">Al-Qur'an</option>
+              <option value="Akidah">Akidah</option>
+              <option value="Fikih">Fikih</option>
+              <option value="SKI">SKI</option>
+              <option value="Matematika">Matematika</option>
+              <option value="Bahasa Arab">Bahasa Arab</option>
+              <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+              <option value="Bahasa Inggris">Bahasa Inggris</option>
+              <option value="Bahasa Inggris">Bahasa Jawa</option>
+              <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+              <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+              <option value="PKN">PKN</option>
+              <option value="Seni Budaya/Prakarya">Seni Budaya/Prakarya</option>
+              <option value="PJOK">PJOK</option>
+              <option value="Informatika">Informatika</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            Simpan Data
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL SISWA -->
+    <div id="modal-siswa" class="modal-overlay">
+      <div class="modal-box">
+        <div
+          class="modal-header"
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+          "
+        >
+          <h3 id="modal-siswa-title">Tambah Siswa</h3>
+          <button
+            class="close-modal"
+            onclick="closeModal('modal-siswa')"
+            style="
+              border: none;
+              background: none;
+              font-size: 1.5rem;
+              cursor: pointer;
+            "
+          >
+            &times;
+          </button>
+        </div>
+        <form id="form-siswa" onsubmit="saveSiswa(event)">
+          <input type="hidden" id="siswa-id" />
+          <div class="form-group">
+            <label class="form-label">NISN</label>
+            <input
+              type="text"
+              id="siswa-nisn"
+              class="form-control"
+              required
+              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" id="siswa-nama" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kelas</label>
+            <select id="siswa-kelas" class="form-select">
+              <!-- Opsi Kelas dari A sampai P -->
+              <option value="7A">7A</option>
+              <option value="7B">7B</option>
+              <option value="7C">7C</option>
+              <option value="7D">7D</option>
+              <option value="7E">7E</option>
+              <option value="7F">7F</option>
+              <option value="7G">7G</option>
+              <option value="7H">7H</option>
+              <option value="7I">7I</option>
+              <option value="7J">7J</option>
+              <option value="7K">7K</option>
+              <option value="7L">7L</option>
+              <option value="7M">7M</option>
+              <option value="7N">7N</option>
+              <option value="7O">7O</option>
+              <option value="7P">7P</option>
+              <option disabled>---</option>
+              <option value="8A">8A</option>
+              <option value="8B">8B</option>
+              <option value="8C">8C</option>
+              <option value="8D">8D</option>
+              <option value="8E">8E</option>
+              <option value="8F">8F</option>
+              <option value="8G">8G</option>
+              <option value="8H">8H</option>
+              <option value="8I">8I</option>
+              <option value="8J">8J</option>
+              <option value="8K">8K</option>
+              <option value="8L">8L</option>
+              <option value="8M">8M</option>
+              <option value="8N">8N</option>
+              <option value="8O">8O</option>
+              <option value="8P">8P</option>
+              <option disabled>---</option>
+              <option value="9A">9A</option>
+              <option value="9B">9B</option>
+              <option value="9C">9C</option>
+              <option value="9D">9D</option>
+              <option value="9E">9E</option>
+              <option value="9F">9F</option>
+              <option value="9G">9G</option>
+              <option value="9H">9H</option>
+              <option value="9I">9I</option>
+              <option value="9J">9J</option>
+              <option value="9K">9K</option>
+              <option value="9L">9L</option>
+              <option value="9M">9M</option>
+              <option value="9N">9N</option>
+              <option value="9O">9O</option>
+              <option value="9P">9P</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jenis Kelamin</label>
+            <select id="siswa-jk" class="form-select">
+              <option value="L">Laki-laki</option>
+              <option value="P">Perempuan</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            Simpan Data
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast-container" id="toast-area"></div>
+
+    <script>
+      // ==========================================
+      // KONFIGURASI GOOGLE SHEETS
+      // ==========================================
+      // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI LANGKAH 2
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbwUvt289gwICtDsNVZSu3xV4Q6SgrfZI2W47r2pzvCU20LlLdNImZNzR6Bs7_Crb2Gx/exec";
+      // ==========================================
+
+      let dataGuru = [];
+      let dataSiswa = [];
+      let dataJurnal = [];
+
+      // --- FUNGSI UMUM UI ---
+      function toggleSidebar() {
+        // Toggle Class pada Sidebar
+        document.getElementById("sidebar").classList.toggle("active");
+        // Toggle Class pada Overlay (PENTING)
+        document.getElementById("sidebar-overlay").classList.toggle("active");
+      }
+
+      function nav(sectionId, el) {
+        // ... kode lama ...
+        document
+          .querySelectorAll(".page-section")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(sectionId).classList.add("active");
+        document
+          .querySelectorAll(".nav-link")
+          .forEach((l) => l.classList.remove("active"));
+        if (el) el.classList.add("active");
+        document.getElementById("page-title").innerText = el
+          ? el.innerText.trim()
+          : "Dashboard";
+
+        // UPDATE: Otomatis tutup sidebar di layar kecil saat menu diklik
+        if (window.innerWidth <= 992) {
+          const sidebar = document.getElementById("sidebar");
+          const overlay = document.getElementById("sidebar-overlay");
+
+          // Jika sedang terbuka, tutup
+          if (sidebar.classList.contains("active")) {
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+          }
+        }
+      }
+
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+        if (id === "modal-guru") {
+          document.getElementById("form-guru").reset();
+          document.getElementById("guru-id").value = "";
+          document.getElementById("modal-guru-title").innerText = "Tambah Guru";
+        }
+        if (id === "modal-siswa") {
+          document.getElementById("form-siswa").reset();
+          document.getElementById("siswa-id").value = "";
+          document.getElementById("modal-siswa-title").innerText =
+            "Tambah Siswa";
+        }
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+
+      function showToast(msg, type = "success") {
+        const container = document.getElementById("toast-area");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${msg}</span> <i class="fas ${
+          type === "success" ? "fa-check-circle" : "fa-exclamation-circle"
+        }"></i>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+
+      // --- KONEKSI KE GOOGLE SHEETS ---
+      async function fetchDataFromSheets() {
+        if (!SCRIPT_URL || SCRIPT_URL.includes("PASTE_URL")) {
+          alert("Harap isi SCRIPT_URL...");
+          return;
+        }
+
+        showToast("Mengambil data...", "info");
+
+        try {
+          // Ambil Data Guru
+          const resGuru = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "read", type: "guru" }),
+          });
+          const jsonGuru = await resGuru.json();
+          if (jsonGuru.status === "success") {
+            dataGuru = jsonGuru.data;
+            renderGuruTable();
+
+            // --- PERBAIKAN: Isi Dropdown Filter Guru Sekarang Juga ---
+            const filterGuru = document.getElementById("filter-guru");
+            if (filterGuru) {
+              // Simpan nilai yang sedang dipilih (jika sedang filter)
+              const currentVal = filterGuru.value;
+
+              filterGuru.innerHTML = '<option value="">Semua Guru</option>';
+              dataGuru.forEach((g) => {
+                filterGuru.innerHTML += `<option value="${g.nama}">${g.nama}</option>`;
+              });
+
+              // Kembalikan nilai filter jika ada
+              filterGuru.value = currentVal;
+            }
+          }
+
+          // Ambil Data Siswa
+          const resSiswa = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "read", type: "siswa" }),
+          });
+          const jsonSiswa = await resSiswa.json();
+          if (jsonSiswa.status === "success") dataSiswa = jsonSiswa.data;
+          renderSiswaTable();
+
+          // Ambil Data Jurnal
+          const resJurnal = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "read", type: "jurnal" }),
+          });
+          const jsonJurnal = await resJurnal.json();
+          if (jsonJurnal.status === "success") dataJurnal = jsonJurnal.data;
+          renderJurnalTable();
+
+          showToast("Sinkronisasi Selesai");
+        } catch (error) {
+          console.error(error);
+          showToast("Gagal koneksi ke Google Sheets", "error");
+        }
+      }
+
+      async function sendDataToSheets(action, type, payload) {
+        try {
+          const res = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: action, type: type, data: payload }),
+          });
+          return await res.json();
+        } catch (error) {
+          console.error(error);
+          return { status: "error", message: error.toString() };
+        }
+      }
+
+      // --- LOGIKA GURU ---
+      function renderGuruTable() {
+        const tbody = document.querySelector("#table-guru tbody");
+        tbody.innerHTML = "";
+        dataGuru.forEach((g) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+          <td>${g.nip}</td>
+          <td><strong>${g.nama}</strong></td>
+          <td><span class="badge badge-L">${g.mapel}</span></td>
+          <td style="text-align: right;">
+            <button class="btn btn-info" onclick="editGuru(${g.id})"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger" onclick="deleteGuru(${g.id})"><i class="fas fa-trash"></i></button>
+          </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function saveGuru(e) {
+        e.preventDefault();
+
+        // AMBIL ELEMEN TOMBOL
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML; // Simpan teks asli tombol
+
+        const id = document.getElementById("guru-id").value;
+        const nip = document.getElementById("guru-nip").value;
+        const nama = document.getElementById("guru-nama").value;
+        const mapel = document.getElementById("guru-mapel").value;
+
+        // Validasi input dropdown
+        if (!mapel) {
+          showToast("Pilih Mata Pelajaran", "error");
+          return;
+        }
+
+        // 1. Disable tombol & Ganti jadi Loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+        let finalId = id;
+        if (!finalId) {
+          const maxId =
+            dataGuru.length > 0
+              ? Math.max(...dataGuru.map((d) => Number(d.id)))
+              : 0;
+          finalId = maxId + 1;
+        }
+
+        const payload = { id: finalId, nip, nama, mapel };
+        const action = id ? "edit" : "add";
+
+        try {
+          const res = await sendDataToSheets(action, "guru", payload);
+
+          if (res.status === "success") {
+            showToast(id ? "Data Guru diperbarui" : "Data Guru ditambahkan");
+            closeModal("modal-guru");
+            fetchDataFromSheets();
+          } else {
+            showToast("Gagal: " + res.message, "error");
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("Terjadi kesalahan koneksi", "error");
+        } finally {
+          // 2. Aktifkan kembali tombol setelah selesai (sukses maupun gagal)
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      }
+
+      function editGuru(id) {
+        const g = dataGuru.find((d) => d.id == id);
+        if (g) {
+          document.getElementById("guru-id").value = g.id;
+          document.getElementById("guru-nip").value = g.nip;
+          document.getElementById("guru-nama").value = g.nama;
+
+          // Set nilai untuk dropdown mapel
+          const mapelSelect = document.getElementById("guru-mapel");
+          mapelSelect.value = g.mapel;
+
+          document.getElementById("modal-guru-title").innerText = "Edit Guru";
+          openModal("modal-guru");
+        }
+      }
+      async function deleteGuru(id) {
+        if (confirm("Yakin hapus data ini?")) {
+          const res = await sendDataToSheets("delete", "guru", { id });
+          if (res.status === "success") {
+            showToast("Data dihapus");
+            fetchDataFromSheets();
+          }
+        }
+      }
+
+      // --- LOGIKA SISWA ---
+      function renderSiswaTable() {
+        const tbody = document.querySelector("#table-siswa tbody");
+        tbody.innerHTML = "";
+
+        dataSiswa.forEach((s) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+      <td>${s.nisn}</td> <!-- Pakai nisn -->
+      <td><strong>${s.nama}</strong></td>
+      <td><span class="badge badge-L">${s.kelas}</span></td>
+      <td><span class="badge ${s.jk === "L" ? "badge-L" : "badge-P"}">${
+            s.jk
+          }</span></td>
+      <td style="text-align: right;">
+        <button class="btn btn-info" onclick="editSiswa(${
+          s.id
+        })"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-danger" onclick="deleteSiswa(${
+          s.id
+        })"><i class="fas fa-trash"></i></button>
+      </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function saveSiswa(e) {
+        e.preventDefault();
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+
+        // Ganti 'siswa-nis' menjadi 'siswa-nisn'
+        const id = document.getElementById("siswa-id").value;
+        const nisn = document.getElementById("siswa-nisn").value;
+        const nama = document.getElementById("siswa-nama").value;
+        const kelas = document.getElementById("siswa-kelas").value;
+        const jk = document.getElementById("siswa-jk").value;
+
+        // Validasi Angka (Double check di sisi JS)
+        if (isNaN(nisn) || nisn === "") {
+          showToast("NISN harus berupa angka!", "error");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+        let finalId = id;
+        if (!finalId) {
+          const maxId =
+            dataSiswa.length > 0
+              ? Math.max(...dataSiswa.map((d) => Number(d.id)))
+              : 0;
+          finalId = maxId + 1;
+        }
+
+        // Payload mengirim 'nisn'
+        const payload = { id: finalId, nisn, nama, kelas, jk };
+        const action = id ? "edit" : "add";
+
+        try {
+          const res = await sendDataToSheets(action, "siswa", payload);
+
+          if (res.status === "success") {
+            showToast(id ? "Data Siswa diperbarui" : "Data Siswa ditambahkan");
+            closeModal("modal-siswa");
+            fetchDataFromSheets();
+          } else {
+            showToast("Gagal: " + res.message, "error");
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("Terjadi kesalahan koneksi", "error");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      }
+
+      function editSiswa(id) {
+        const s = dataSiswa.find((d) => d.id == id);
+        if (s) {
+          document.getElementById("siswa-id").value = s.id;
+          document.getElementById("siswa-nisn").value = s.nisn; // Pakai nisn
+          document.getElementById("siswa-nama").value = s.nama;
+          document.getElementById("siswa-kelas").value = s.kelas;
+          document.getElementById("siswa-jk").value = s.jk;
+          document.getElementById("modal-siswa-title").innerText = "Edit Siswa";
+          openModal("modal-siswa");
+        }
+      }
+
+      async function deleteSiswa(id) {
+        if (confirm("Yakin hapus data ini?")) {
+          const res = await sendDataToSheets("delete", "siswa", { id });
+          if (res.status === "success") {
+            showToast("Data dihapus");
+            fetchDataFromSheets();
+          }
+        }
+      }
+
+      // --- EXCEL EXPORT ---
+      function exportToExcel(type) {
+        let data = [];
+        let fileName = "";
+        if (type === "guru") {
+          data = dataGuru.map((d) => ({
+            NIP: d.nip,
+            "Nama Lengkap": d.nama,
+            "Mata Pelajaran": d.mapel,
+          }));
+          fileName = "Daftar_Guru_MTsN1Lamongan.xlsx";
+        } else if (type === "siswa") {
+          data = dataSiswa.map((d) => ({
+            NISN: d.nisn,
+            "Nama Lengkap": d.nama,
+            Kelas: d.kelas,
+            "L/P": d.jk,
+          }));
+          fileName = "Daftar_Siswa_MTsN1Lamongan.xlsx";
+        }
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Data");
+        XLSX.writeFile(wb, fileName);
+      }
+
+      // --- FUNGSI UPLOAD BULK EXCEL ---
+      async function handleBulkUpload(input, type) {
+        const file = input.files[0];
+        if (!file) return;
+
+        showToast("Membaca file Excel...", "info");
+
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+            if (jsonData.length === 0) {
+              showToast("File Excel kosong atau format salah.", "error");
+              return;
+            }
+
+            // Ambil data yang ada saat ini untuk cek duplikat
+            const currentData = type === "guru" ? dataGuru : dataSiswa;
+            const newData = [];
+
+            // Tentukan ID terakhir untuk generasi ID baru otomatis
+            let maxId = 0;
+            if (currentData.length > 0) {
+              maxId = Math.max(...currentData.map((d) => Number(d.id)));
+            }
+
+            let skippedCount = 0;
+
+            jsonData.forEach((row) => {
+              // Mapping Kolom Excel (Case Insensitive & Alias Support)
+              const nip = row["NIP"] || row["nip"];
+              const nisn = row["NISN"] || row["nisn"];
+              const nama = row["Nama Lengkap"] || row["Nama"] || row["nama"];
+              const mapel = row["Mata Pelajaran"] || row["mapel"] || "-";
+              const kelas = row["Kelas"] || row["kelas"] || "-";
+              const jk = row["L/P"] || row["jk"] || row["Jenis Kelamin"] || "L";
+
+              // Validasi wajib ada
+              const uniqueKey = type === "guru" ? nip : nisn;
+
+              if (!nama || !uniqueKey) return; // Skip jika data tidak lengkap
+
+              // Cek Duplikat berdasarkan NIP/NIS
+              const isExist = currentData.find(
+                (d) => (type === "guru" ? d.nip : d.nisn) == uniqueKey
+              );
+
+              if (!isExist) {
+                maxId++; // Naikkan ID
+                if (type === "guru") {
+                  newData.push({
+                    id: maxId,
+                    nip: String(nip),
+                    nama: String(nama),
+                    mapel: String(mapel),
+                  });
+                } else {
+                  newData.push({
+                    id: maxId,
+                    nisn: String(nisn),
+                    nama: String(nama),
+                    kelas: String(kelas),
+                    jk: String(jk),
+                  });
+                }
+              } else {
+                skippedCount++;
+              }
+            });
+
+            if (newData.length === 0) {
+              showToast(
+                "Tidak ada data baru (Semua duplikat/invalid).",
+                "warning"
+              );
+              input.value = "";
+              return;
+            }
+
+            // Kirim ke Google Sheets
+            showToast(`Mengunggah ${newData.length} data...`, "info");
+            const res = await sendDataToSheets("add", type, newData);
+
+            if (res.status === "success") {
+              let msg = `Berhasil upload ${newData.length} data.`;
+              if (skippedCount > 0)
+                msg += ` ${skippedCount} duplikat dilewati.`;
+              showToast(msg, "success");
+
+              // Refresh tabel
+              fetchDataFromSheets();
+            } else {
+              showToast("Gagal upload: " + res.message, "error");
+            }
+          } catch (error) {
+            console.error(error);
+            showToast("Gagal membaca file Excel.", "error");
+          }
+          // Reset input agar bisa pilih file sama lagi jika mau
+          input.value = "";
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      // Init
+      window.onload = function () {
+        fetchDataFromSheets();
+      };
+
+      function renderJurnalTable() {
+        const tbody = document.querySelector("#table-jurnal tbody");
+        tbody.innerHTML = "";
+
+        // 1. Ambil Nilai Filter
+        const fGuru = document.getElementById("filter-guru").value;
+        const fMapel = document.getElementById("filter-mapel").value;
+        const fKelas = document.getElementById("filter-kelas").value;
+        const fBulan = document.getElementById("filter-bulan").value;
+
+        // 2. Filter Data
+        let filteredData = dataJurnal.filter((j) => {
+          if (fGuru && j.guru !== fGuru) return false;
+          if (fMapel && j.mapel !== fMapel) return false;
+          if (fKelas && j.kelas !== fKelas) return false;
+          if (fBulan && !j.tanggal.startsWith(fBulan)) return false; // Filter Bulan (YYYY-MM)
+          return true;
+        });
+
+        // 3. Urutkan (Tanggal terbaru, lalu jam)
+        const sortedJurnal = [...filteredData].sort(
+          (a, b) =>
+            new Date(b.tanggal) - new Date(a.tanggal) || a.jamke - b.jamke
+        );
+
+        if (sortedJurnal.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="8" style="text-align:center; color:#888;">Tidak ada data ditemukan</td></tr>';
+          return;
+        }
+
+        sortedJurnal.forEach((j) => {
+          const tr = document.createElement("tr");
+          // Format tanggal Indonesia (Contoh: 6 Januari 2026)
+          const dateObj = new Date(j.tanggal);
+          // Jika tanggal tidak valid, pakai nilai asli. Jika valid, format.
+          const dateDisplay = isNaN(dateObj.getTime())
+            ? j.tanggal
+            : dateObj.toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+          tr.innerHTML = `
+      <td>${dateDisplay}</td>
+      <td><span class="badge badge-L">${j.jamke}</span></td>
+      <td><strong>${j.guru}</strong></td>
+      <td>
+         <div style="font-weight:600">${j.kelas}</div>
+         <small style="color:var(--text-muted)">${j.mapel}</small>
+      </td>
+      <td>${j.materi.substring(0, 30)}${j.materi.length > 30 ? "..." : ""}</td>
+      <td><small>${j.tugas || "-"}</small></td>
+      <td><small style="color:var(--danger)">${j.absensi || "-"}</small></td>
+      <td style="text-align: right;">
+        <button class="btn btn-info" onclick="editJurnal(${
+          j.id
+        })"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-danger" onclick="deleteJurnal(${
+          j.id
+        })"><i class="fas fa-trash"></i></button>
+      </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function openModalJurnal(isEdit = false) {
+        document.getElementById("modal-jurnal").classList.add("open");
+
+        // Isi Dropdown Guru (Hanya jika belum ada opsi, atau selalu refresh)
+        const guruSelect = document.getElementById("jurnal-guru");
+        guruSelect.innerHTML = '<option value="">-- Pilih Guru --</option>';
+        dataGuru.forEach((g) => {
+          guruSelect.innerHTML += `<option value="${g.nama}">${g.nama}</option>`;
+        });
+
+        // Isi Dropdown Filter Guru (Di Toolbar)
+        const filterGuruSelect = document.getElementById("filter-guru");
+        filterGuruSelect.innerHTML = '<option value="">Semua Guru</option>';
+        dataGuru.forEach((g) => {
+          filterGuruSelect.innerHTML += `<option value="${g.nama}">${g.nama}</option>`;
+        });
+
+        if (!isEdit) {
+          document.getElementById("form-jurnal").reset();
+          document.getElementById("jurnal-id").value = "";
+          document.getElementById("modal-jurnal-title").innerText =
+            "Tambah Jurnal";
+          document.getElementById("jurnal-tanggal").valueAsDate = new Date();
+        }
+      }
+
+      function closeModalJurnal() {
+        document.getElementById("modal-jurnal").classList.remove("open");
+      }
+
+      async function saveJurnal(e) {
+        e.preventDefault();
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+
+        const id = document.getElementById("jurnal-id").value;
+        const guru = document.getElementById("jurnal-guru").value;
+        const kelas = document.getElementById("jurnal-kelas").value;
+        const mapel = document.getElementById("jurnal-mapel").value;
+        const jamke = document.getElementById("jurnal-jamke").value;
+        const tanggal = document.getElementById("jurnal-tanggal").value;
+        const materi = document.getElementById("jurnal-materi").value;
+        const tugas = document.getElementById("jurnal-tugas").value;
+        const absensi = document.getElementById("jurnal-absensi").value;
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+        let finalId = id;
+        if (!finalId) {
+          const maxId =
+            dataJurnal.length > 0
+              ? Math.max(...dataJurnal.map((d) => Number(d.id)))
+              : 0;
+          finalId = maxId + 1;
+        }
+
+        // Payload menyertakan field baru: jamke, tugas, absensi
+        const payload = {
+          id: finalId,
+          guru,
+          kelas,
+          mapel,
+          jamke,
+          tanggal,
+          materi,
+          tugas,
+          absensi,
+        };
+        const action = id ? "edit" : "add";
+
+        try {
+          const res = await sendDataToSheets(action, "jurnal", payload);
+
+          if (res.status === "success") {
+            showToast(id ? "Jurnal diperbarui" : "Jurnal ditambahkan");
+            closeModalJurnal();
+            fetchDataFromSheets();
+          } else {
+            showToast("Gagal: " + res.message, "error");
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("Terjadi kesalahan koneksi", "error");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      }
+
+      function editJurnal(id) {
+        const j = dataJurnal.find((d) => d.id == id);
+        if (j) {
+          document.getElementById("jurnal-id").value = j.id;
+          document.getElementById("jurnal-kelas").value = j.kelas;
+          document.getElementById("jurnal-jamke").value = j.jamke;
+          document.getElementById("jurnal-tanggal").value = j.tanggal;
+          document.getElementById("jurnal-materi").value = j.materi;
+          document.getElementById("jurnal-tugas").value = j.tugas || "";
+          document.getElementById("jurnal-absensi").value = j.absensi || "";
+
+          document.getElementById("modal-jurnal-title").innerText =
+            "Edit Jurnal";
+
+          openModalJurnal(true);
+
+          // Set nilai setelah dropdown terisi
+          document.getElementById("jurnal-guru").value = j.guru;
+          document.getElementById("jurnal-mapel").value = j.mapel;
+        }
+      }
+
+      async function deleteJurnal(id) {
+        if (confirm("Yakin hapus jurnal ini?")) {
+          const res = await sendDataToSheets("delete", "jurnal", { id });
+          if (res.status === "success") {
+            showToast("Data dihapus");
+            fetchDataFromSheets();
+          }
+        }
+      }
+
+      function exportJurnalToExcel() {
+        // Ambil data yang sudah terfilter dari fungsi render (atau ulangi logic filter di sini)
+        // Untuk simplifikasi, kita pakai logika filter yang sama dengan renderJurnalTable
+        const fGuru = document.getElementById("filter-guru").value;
+        const fMapel = document.getElementById("filter-mapel").value;
+        const fKelas = document.getElementById("filter-kelas").value;
+        const fBulan = document.getElementById("filter-bulan").value;
+
+        let filteredData = dataJurnal.filter((j) => {
+          if (fGuru && j.guru !== fGuru) return false;
+          if (fMapel && j.mapel !== fMapel) return false;
+          if (fKelas && j.kelas !== fKelas) return false;
+          if (fBulan && !j.tanggal.startsWith(fBulan)) return false;
+          return true;
+        });
+
+        if (filteredData.length === 0) {
+          showToast("Tidak ada data untuk diunduh", "warning");
+          return;
+        }
+
+        // Mapping ke format Excel
+        const dataExcel = filteredData.map((d) => ({
+          Tanggal: d.tanggal,
+          Jam: d.jamke,
+          Guru: d.guru,
+          Kelas: d.kelas,
+          Mapel: d.mapel,
+          "Kegiatan/Materi": d.materi,
+          Penugasan: d.tugas,
+          "Siswa Tidak Hadir": d.absensi,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dataExcel);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Jurnal");
+
+        // Nama file dinamis sesuai bulan atau sekarang
+        const fileName = `Jurnal_Mengajar_${new Date()
+          .toISOString()
+          .slice(0, 10)}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        showToast("File Excel berhasil diunduh");
+      }
+    </script>
+  </body>
+</html>
