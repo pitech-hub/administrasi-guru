@@ -391,6 +391,63 @@
           transform: rotate(360deg);
         }
       }
+
+      /* TAMBAHKAN CSS INI AGAR KOTAK STATISTIK TAMPIL RAPI */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #e2e8f0;
+      }
+
+      .stat-info h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+      .stat-info p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+
+      /* Warna Latar Belakang Icon */
+      .bg-green-light {
+        background: #dcfce7;
+        color: var(--success);
+      }
+      .bg-orange-light {
+        background: #ffedd5;
+        color: var(--warning);
+      }
+      .bg-blue-light {
+        background: #dbeafe;
+        color: var(--info);
+      }
+      .bg-red-light {
+        background: #fee2e2;
+        color: var(--danger);
+      }
     </style>
   </head>
   <body>
@@ -424,6 +481,11 @@
             <i class="fas fa-book-open"></i> Jurnal Mengajar
           </a>
         </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" onclick="nav('absensi', this)">
+            <i class="fas fa-clipboard-check"></i> Daftar Hadir
+          </a>
+        </li>
       </ul>
     </aside>
 
@@ -444,7 +506,7 @@
         >
           <span>Admin</span>
           <img
-            src="https://picsum.photos/seed/admin/40/40"
+            src="logo.jpg"
             class="avatar"
             style="width: 40px; height: 40px; border-radius: 50%"
           />
@@ -637,16 +699,51 @@
                   <option value="7C">7C</option>
                   <option value="7D">7D</option>
                   <option value="7E">7E</option>
+                  <option value="7F">7F</option>
+                  <option value="7G">7G</option>
+                  <option value="7H">7H</option>
+                  <option value="7I">7I</option>
+                  <option value="7J">7J</option>
+                  <option value="7K">7K</option>
+                  <option value="7L">7L</option>
+                  <option value="7M">7M</option>
+                  <option value="7N">7N</option>
+                  <option value="7O">7O</option>
+                  <option value="7P">7P</option>
+                  <option disabled>---</option>
                   <option value="8A">8A</option>
                   <option value="8B">8B</option>
                   <option value="8C">8C</option>
                   <option value="8D">8D</option>
                   <option value="8E">8E</option>
+                  <option value="8F">8F</option>
+                  <option value="8G">8G</option>
+                  <option value="8H">8H</option>
+                  <option value="8I">8I</option>
+                  <option value="8J">8J</option>
+                  <option value="8K">8K</option>
+                  <option value="8L">8L</option>
+                  <option value="8M">8M</option>
+                  <option value="8N">8N</option>
+                  <option value="8O">8O</option>
+                  <option value="8P">8P</option>
+                  <option disabled>---</option>
                   <option value="9A">9A</option>
                   <option value="9B">9B</option>
                   <option value="9C">9C</option>
                   <option value="9D">9D</option>
                   <option value="9E">9E</option>
+                  <option value="9F">9F</option>
+                  <option value="9G">9G</option>
+                  <option value="9H">9H</option>
+                  <option value="9I">9I</option>
+                  <option value="9J">9J</option>
+                  <option value="9K">9K</option>
+                  <option value="9L">9L</option>
+                  <option value="9M">9M</option>
+                  <option value="9N">9N</option>
+                  <option value="9O">9O</option>
+                  <option value="9P">9P</option>
                 </select>
 
                 <input
@@ -670,7 +767,8 @@
                 <thead>
                   <tr>
                     <th width="10%">Tanggal</th>
-                    <th width="8%">Jam</th>
+                    <!-- Lebar diperlebar sedikit agar teks '1 - 3' muat rapi -->
+                    <th width="12%">Jam Ke-</th>
                     <th>Guru</th>
                     <th width="10%">Kelas/Mapel</th>
                     <th>Kegiatan</th>
@@ -702,18 +800,6 @@
               <h3 class="modal-title" id="modal-jurnal-title">
                 Tambah Jurnal Mengajar
               </h3>
-              <!-- <button
-                class="close-modal"
-                onclick="closeModalJurnal()"
-                style="
-                  border: none;
-                  background: none;
-                  font-size: 1.5rem;
-                  cursor: pointer;
-                "
-              >
-                &times;
-              </button> -->
             </div>
             <br />
             <form id="form-jurnal" onsubmit="saveJurnal(event)">
@@ -726,12 +812,10 @@
                 </select>
               </div>
 
+              <!-- GRID DIUBAH: Menjadi 2 Kolom untuk lebih rapi -->
+              <!-- Baris 1: Kelas & Mapel -->
               <div
-                style="
-                  display: grid;
-                  grid-template-columns: 1fr 1fr 1fr;
-                  gap: 10px;
-                "
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px"
               >
                 <div class="form-group">
                   <label class="form-label">Kelas</label>
@@ -789,23 +873,6 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Jam Ke-</label>
-                  <select id="jurnal-jamke" class="form-select" required>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                  </select>
-                </div>
-                <div class="form-group">
                   <label class="form-label">Mapel</label>
                   <select id="jurnal-mapel" class="form-select" required>
                     <option value="">-- Pilih Mapel --</option>
@@ -826,6 +893,46 @@
                     </option>
                     <option value="PJOK">PJOK</option>
                     <option value="Informatika">Informatika</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Baris 2: Jam Mulai & Jam Sampai (BARU) -->
+              <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px"
+              >
+                <div class="form-group">
+                  <label class="form-label">Mulai Jam Ke-</label>
+                  <select id="jurnal-jamke-mulai" class="form-select" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Sampai Jam Ke-</label>
+                  <select id="jurnal-jamke-sampai" class="form-select" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
                   </select>
                 </div>
               </div>
@@ -877,6 +984,323 @@
             </form>
           </div>
         </div>
+
+        <!-- 5. DAFTAR HADIR SISWA -->
+        <section id="absensi" class="page-section">
+          <!-- FORM INPUT PRESENSI -->
+          <div class="data-card">
+            <div class="toolbar">
+              <h4>Input Presensi Kelas</h4>
+              <button class="btn btn-primary" onclick="loadPresensiForm()">
+                <i class="fas fa-sync"></i> Tampilkan Siswa
+              </button>
+            </div>
+
+            <!-- Area Pilihan Kelas & Tanggal -->
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 15px;
+                margin-bottom: 20px;
+              "
+            >
+              <div class="form-group">
+                <label class="form-label">Kelas</label>
+                <select id="absen-kelas" class="form-select">
+                  <option value="">-- Pilih Kelas --</option>
+                  <option value="7A">7A</option>
+                  <option value="7B">7B</option>
+                  <option value="7C">7C</option>
+                  <option value="7D">7D</option>
+                  <option value="7E">7E</option>
+                  <option value="7F">7F</option>
+                  <option value="7G">7G</option>
+                  <option value="7H">7H</option>
+                  <option value="7I">7I</option>
+                  <option value="7J">7J</option>
+                  <option value="7K">7K</option>
+                  <option value="7L">7L</option>
+                  <option value="7M">7M</option>
+                  <option value="7N">7N</option>
+                  <option value="7O">7O</option>
+                  <option value="7P">7P</option>
+                  <option disabled>---</option>
+                  <option value="8A">8A</option>
+                  <option value="8B">8B</option>
+                  <option value="8C">8C</option>
+                  <option value="8D">8D</option>
+                  <option value="8E">8E</option>
+                  <option value="8F">8F</option>
+                  <option value="8G">8G</option>
+                  <option value="8H">8H</option>
+                  <option value="8I">8I</option>
+                  <option value="8J">8J</option>
+                  <option value="8K">8K</option>
+                  <option value="8L">8L</option>
+                  <option value="8M">8M</option>
+                  <option value="8N">8N</option>
+                  <option value="8O">8O</option>
+                  <option value="8P">8P</option>
+                  <option disabled>---</option>
+                  <option value="9A">9A</option>
+                  <option value="9B">9B</option>
+                  <option value="9C">9C</option>
+                  <option value="9D">9D</option>
+                  <option value="9E">9E</option>
+                  <option value="9F">9F</option>
+                  <option value="9G">9G</option>
+                  <option value="9H">9H</option>
+                  <option value="9I">9I</option>
+                  <option value="9J">9J</option>
+                  <option value="9K">9K</option>
+                  <option value="9L">9L</option>
+                  <option value="9M">9M</option>
+                  <option value="9N">9N</option>
+                  <option value="9O">9O</option>
+                  <option value="9P">9P</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mata Pelajaran</label>
+                <!-- PERUBAHAN: INPUT TEXT JADI DROPDOWN -->
+                <select id="absen-mapel" class="form-select">
+                  <option value="">-- Pilih Mapel --</option>
+                  <option value="Al-Qur'an">Al-Qur'an</option>
+                  <option value="Akidah">Akidah</option>
+                  <option value="Fikih">Fikih</option>
+                  <option value="SKI">SKI</option>
+                  <option value="Matematika">Matematika</option>
+                  <option value="Bahasa Arab">Bahasa Arab</option>
+                  <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                  <option value="Bahasa Inggris">Bahasa Inggris</option>
+                  <option value="Bahasa Inggris">Bahasa Jawa</option>
+                  <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+                  <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+                  <option value="PKN">PKN</option>
+                  <option value="Seni Budaya/Prakarya">
+                    Seni Budaya/Prakarya
+                  </option>
+                  <option value="PJOK">PJOK</option>
+                  <option value="Informatika">Informatika</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tanggal</label>
+                <input type="date" id="absen-tanggal" class="form-control" />
+              </div>
+            </div>
+
+            <div id="absen-input-container" class="table-responsive">
+              <div
+                style="
+                  padding: 40px;
+                  text-align: center;
+                  color: var(--text-muted);
+                  border: 2px dashed #e2e8f0;
+                  border-radius: 8px;
+                "
+              >
+                Silahkan pilih Kelas dan klik "Tampilkan Siswa"
+              </div>
+            </div>
+          </div>
+
+          <!-- REKAP KEHADIRAN (Sebelumnya Riwayat) -->
+          <div class="data-card">
+            <div class="toolbar">
+              <div
+                class="toolbar-left"
+                style="
+                  display: flex;
+                  gap: 10px;
+                  flex-wrap: wrap;
+                  align-items: center;
+                "
+              >
+                <h4>Rekap Kehadiran</h4>
+
+                <!-- FILTERS -->
+                <select
+                  id="rekap-kelas"
+                  class="form-select"
+                  onchange="renderPresensiTable()"
+                  style="width: 150px"
+                >
+                  <option value="">Semua Kelas</option>
+                  <option value="7A">7A</option>
+                  <option value="7B">7B</option>
+                  <option value="7C">7C</option>
+                  <option value="7D">7D</option>
+                  <option value="7E">7E</option>
+                  <option value="7F">7F</option>
+                  <option value="7G">7G</option>
+                  <option value="7H">7H</option>
+                  <option value="7I">7I</option>
+                  <option value="7J">7J</option>
+                  <option value="7K">7K</option>
+                  <option value="7L">7L</option>
+                  <option value="7M">7M</option>
+                  <option value="7N">7N</option>
+                  <option value="7O">7O</option>
+                  <option value="7P">7P</option>
+                  <option disabled>---</option>
+                  <option value="8A">8A</option>
+                  <option value="8B">8B</option>
+                  <option value="8C">8C</option>
+                  <option value="8D">8D</option>
+                  <option value="8E">8E</option>
+                  <option value="8F">8F</option>
+                  <option value="8G">8G</option>
+                  <option value="8H">8H</option>
+                  <option value="8I">8I</option>
+                  <option value="8J">8J</option>
+                  <option value="8K">8K</option>
+                  <option value="8L">8L</option>
+                  <option value="8M">8M</option>
+                  <option value="8N">8N</option>
+                  <option value="8O">8O</option>
+                  <option value="8P">8P</option>
+                  <option disabled>---</option>
+                  <option value="9A">9A</option>
+                  <option value="9B">9B</option>
+                  <option value="9C">9C</option>
+                  <option value="9D">9D</option>
+                  <option value="9E">9E</option>
+                  <option value="9F">9F</option>
+                  <option value="9G">9G</option>
+                  <option value="9H">9H</option>
+                  <option value="9I">9I</option>
+                  <option value="9J">9J</option>
+                  <option value="9K">9K</option>
+                  <option value="9L">9L</option>
+                  <option value="9M">9M</option>
+                  <option value="9N">9N</option>
+                  <option value="9O">9O</option>
+                  <option value="9P">9P</option>
+                </select>
+
+                <select
+                  id="rekap-mapel"
+                  class="form-select"
+                  onchange="renderPresensiTable()"
+                  style="width: 150px"
+                >
+                  <option value="">Semua Mapel</option>
+                  <option value="Al-Qur'an">Al-Qur'an</option>
+                  <option value="Akidah">Akidah</option>
+                  <option value="Fikih">Fikih</option>
+                  <option value="SKI">SKI</option>
+                  <option value="Matematika">Matematika</option>
+                  <option value="Bahasa Arab">Bahasa Arab</option>
+                  <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                  <option value="Bahasa Inggris">Bahasa Inggris</option>
+                  <option value="Bahasa Inggris">Bahasa Jawa</option>
+                  <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+                  <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+                  <option value="PKN">PKN</option>
+                  <option value="Seni Budaya/Prakarya">
+                    Seni Budaya/Prakarya
+                  </option>
+                  <option value="PJOK">PJOK</option>
+                  <option value="Informatika">Informatika</option>
+                </select>
+
+                <input
+                  type="month"
+                  id="rekap-bulan"
+                  class="form-control"
+                  onchange="renderPresensiTable()"
+                  style="width: 160px"
+                />
+              </div>
+
+              <div class="toolbar-right">
+                <button
+                  class="btn btn-outline"
+                  onclick="downloadPresensiToExcel()"
+                >
+                  <i class="fas fa-file-excel"></i> Download Excel
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <!-- TAMBAHKAN INI: Wadah untuk Kartu Total Hadir/Sakit/dll -->
+              <!-- TAMBAHKAN INI: Wadah Kartu Total (Style Sama dengan Dashboard) -->
+              <div
+                id="rekap-stats"
+                class="stats-grid"
+                style="display: none; margin-bottom: 25px"
+              >
+                <!-- Hadir -->
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h3 id="stat-total-h">0</h3>
+                    <p>Total Hadir</p>
+                  </div>
+                  <div class="stat-icon bg-green-light">
+                    <i class="fas fa-check-circle"></i>
+                  </div>
+                </div>
+                <!-- Sakit -->
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h3 id="stat-total-s">0</h3>
+                    <p>Total Sakit</p>
+                  </div>
+                  <div class="stat-icon bg-orange-light">
+                    <i class="fas fa-procedures"></i>
+                  </div>
+                </div>
+                <!-- Izin -->
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h3 id="stat-total-i">0</h3>
+                    <p>Total Izin</p>
+                  </div>
+                  <div class="stat-icon bg-blue-light">
+                    <i class="fas fa-envelope-open-text"></i>
+                  </div>
+                </div>
+                <!-- Alpha -->
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h3 id="stat-total-a">0</h3>
+                    <p>Total Alpha</p>
+                  </div>
+                  <div class="stat-icon bg-red-light">
+                    <i class="fas fa-user-times"></i>
+                  </div>
+                </div>
+              </div>
+
+              <table id="table-presensi">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Kelas</th>
+                    <th>NISN</th>
+                    <th>Nama Siswa</th>
+                    <th>Hari/Tanggal</th>
+                    <th>Mapel</th>
+                    <th>Status</th>
+                    <th>Persentase</th>
+                    <!-- Kolom Baru -->
+                    <th style="text-align: right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="9" style="text-align: center">
+                      Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -1062,6 +1486,88 @@
       </div>
     </div>
 
+    <!-- MODAL EDIT PRESENSI -->
+    <div
+      id="modal-presensi"
+      class="modal-overlay"
+      onclick="if(event.target === this) closeModal('modal-presensi')"
+    >
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Edit Data Presensi</h3>
+          <!-- <button class="close-modal" onclick="closeModal('modal-presensi')">
+            &times;
+          </button> -->
+        </div>
+        <br />
+        <form id="form-presensi" onsubmit="updatePresensi(event)">
+          <input type="hidden" id="edit-presensi-id" />
+          <div class="form-group">
+            <label class="form-label">Nama Siswa</label>
+            <input
+              type="text"
+              id="edit-presensi-nama"
+              class="form-control"
+              disabled
+              style="background: #f1f5f9"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kelas</label>
+            <input
+              type="text"
+              id="edit-presensi-kelas"
+              class="form-control"
+              disabled
+              style="background: #f1f5f9"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tanggal</label>
+            <input
+              type="date"
+              id="edit-presensi-tanggal"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mata Pelajaran</label>
+            <select id="edit-presensi-mapel" class="form-select" required>
+              <option value="">-- Pilih Mapel --</option>
+              <option value="Al-Qur'an">Al-Qur'an</option>
+              <option value="Akidah">Akidah</option>
+              <option value="Fikih">Fikih</option>
+              <option value="SKI">SKI</option>
+              <option value="Matematika">Matematika</option>
+              <option value="Bahasa Arab">Bahasa Arab</option>
+              <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+              <option value="Bahasa Inggris">Bahasa Inggris</option>
+              <option value="Bahasa Inggris">Bahasa Jawa</option>
+              <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+              <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+              <option value="PKN">PKN</option>
+              <option value="Seni Budaya/Prakarya">Seni Budaya/Prakarya</option>
+              <option value="PJOK">PJOK</option>
+              <option value="Informatika">Informatika</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status Kehadiran</label>
+            <select id="edit-presensi-status" class="form-select" required>
+              <option value="H">Hadir</option>
+              <option value="S">Sakit</option>
+              <option value="I">Izin</option>
+              <option value="A">Alpha</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            Simpan Perubahan
+          </button>
+        </form>
+      </div>
+    </div>
+
     <div class="toast-container" id="toast-area"></div>
 
     <script>
@@ -1070,12 +1576,13 @@
       // ==========================================
       // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI LANGKAH 2
       const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbwUvt289gwICtDsNVZSu3xV4Q6SgrfZI2W47r2pzvCU20LlLdNImZNzR6Bs7_Crb2Gx/exec";
+        "https://script.google.com/macros/s/AKfycbz2c3z_q1F9DtuUEhrwajNizPkWNcULXH9_ReQedKfYorxqVWobfoc94qWBQBZGaAWp/exec";
       // ==========================================
 
       let dataGuru = [];
       let dataSiswa = [];
       let dataJurnal = [];
+      let dataPresensi = [];
 
       // --- FUNGSI UMUM UI ---
       function toggleSidebar() {
@@ -1194,6 +1701,16 @@
           const jsonJurnal = await resJurnal.json();
           if (jsonJurnal.status === "success") dataJurnal = jsonJurnal.data;
           renderJurnalTable();
+
+          // TAMBAHKAN INI: Ambil Data Presensi
+          const resPresensi = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "read", type: "presensi" }),
+          });
+          const jsonPresensi = await resPresensi.json();
+          if (jsonPresensi.status === "success")
+            dataPresensi = jsonPresensi.data;
+          renderPresensiTable();
 
           showToast("Sinkronisasi Selesai");
         } catch (error) {
@@ -1579,7 +2096,8 @@
         // 3. Urutkan (Tanggal terbaru, lalu jam)
         const sortedJurnal = [...filteredData].sort(
           (a, b) =>
-            new Date(b.tanggal) - new Date(a.tanggal) || a.jamke - b.jamke
+            new Date(b.tanggal) - new Date(a.tanggal) ||
+            (a.jamke_mulai || a.jamke) - (b.jamke_mulai || b.jamke)
         );
 
         if (sortedJurnal.length === 0) {
@@ -1600,9 +2118,34 @@
                 month: "long",
                 year: "numeric",
               });
+
+          // Handle Legacy Data (yang belum punya jamke_mulai / jamke_sampai)
+          // Prioritaskan jamke_mulai jika ada, jika tidak gunakan jamke
+          const jamMulai = j.jamke_mulai || j.jamke;
+          const jamSampai = j.jamke_sampai;
+
+          // LOGIKA TAMPILAN JAM YANG DIPERBAIKI
+          let jamDisplay = "";
+
+          if (jamMulai && jamSampai) {
+            // Jika ada mulai dan sampai
+            if (jamMulai === jamSampai) {
+              // Jika sama, tampilkan satu angka saja (biar tidak aneh: "2 - 2")
+              jamDisplay = `${jamMulai}`;
+            } else {
+              // Tampilkan rentang
+              jamDisplay = `${jamMulai} - ${jamSampai}`;
+            }
+          } else if (jamMulai) {
+            // Hanya ada mulai (data lama atau inputan samping)
+            jamDisplay = `${jamMulai}`;
+          } else {
+            jamDisplay = "-";
+          }
+
           tr.innerHTML = `
       <td>${dateDisplay}</td>
-      <td><span class="badge badge-L">${j.jamke}</span></td>
+      <td><span class="badge badge-L">${jamDisplay}</span></td>
       <td><strong>${j.guru}</strong></td>
       <td>
          <div style="font-weight:600">${j.kelas}</div>
@@ -1663,7 +2206,13 @@
         const guru = document.getElementById("jurnal-guru").value;
         const kelas = document.getElementById("jurnal-kelas").value;
         const mapel = document.getElementById("jurnal-mapel").value;
-        const jamke = document.getElementById("jurnal-jamke").value;
+
+        // AMBIL VALUE BARU: jamke_mulai & jamke_sampai
+        const jamkeMulai = document.getElementById("jurnal-jamke-mulai").value;
+        const jamkeSampai = document.getElementById(
+          "jurnal-jamke-sampai"
+        ).value;
+
         const tanggal = document.getElementById("jurnal-tanggal").value;
         const materi = document.getElementById("jurnal-materi").value;
         const tugas = document.getElementById("jurnal-tugas").value;
@@ -1682,13 +2231,14 @@
           finalId = maxId + 1;
         }
 
-        // Payload menyertakan field baru: jamke, tugas, absensi
+        // Payload menyertakan field baru: jamke_mulai, jamke_sampai
         const payload = {
           id: finalId,
           guru,
           kelas,
           mapel,
-          jamke,
+          jamke_mulai: jamkeMulai,
+          jamke_sampai: jamkeSampai,
           tanggal,
           materi,
           tugas,
@@ -1720,11 +2270,17 @@
         if (j) {
           document.getElementById("jurnal-id").value = j.id;
           document.getElementById("jurnal-kelas").value = j.kelas;
-          document.getElementById("jurnal-jamke").value = j.jamke;
           document.getElementById("jurnal-tanggal").value = j.tanggal;
           document.getElementById("jurnal-materi").value = j.materi;
           document.getElementById("jurnal-tugas").value = j.tugas || "";
           document.getElementById("jurnal-absensi").value = j.absensi || "";
+
+          // Handle Data Lama vs Data Baru
+          // Jika ada jamke_mulai (baru), pakai itu. Jika tidak (lama), coba jamke.
+          document.getElementById("jurnal-jamke-mulai").value =
+            j.jamke_mulai || j.jamke;
+          document.getElementById("jurnal-jamke-sampai").value =
+            j.jamke_sampai || "";
 
           document.getElementById("modal-jurnal-title").innerText =
             "Edit Jurnal";
@@ -1771,7 +2327,8 @@
         // Mapping ke format Excel
         const dataExcel = filteredData.map((d) => ({
           Tanggal: d.tanggal,
-          Jam: d.jamke,
+          "Mulai Jam": d.jamke_mulai || d.jamke || "-", // Support data lama
+          "Sampai Jam": d.jamke_sampai || "-",
           Guru: d.guru,
           Kelas: d.kelas,
           Mapel: d.mapel,
@@ -1790,6 +2347,453 @@
           .slice(0, 10)}.xlsx`;
         XLSX.writeFile(wb, fileName);
         showToast("File Excel berhasil diunduh");
+      }
+
+      // --- LOGIKA ABSENSI ---
+
+      // 1. Load Form (Generate Daftar Siswa berdasarkan Kelas)
+      function loadPresensiForm() {
+        const kelas = document.getElementById("absen-kelas").value;
+        const container = document.getElementById("absen-input-container");
+
+        // Cek apakah data siswa sudah terambil dari Sheets
+        if (!dataSiswa || dataSiswa.length === 0) {
+          container.innerHTML = `<div style="padding:20px; text-align:center; background:#fee2e2; color:#ef4444; border-radius:8px;">
+        <i class="fas fa-exclamation-triangle"></i> Data Siswa belum dimuat. 
+        <br>Klik menu Dashboard > Refresh Data, lalu coba lagi.
+    </div>`;
+          return;
+        }
+
+        if (!kelas) {
+          showToast("Pilih kelas terlebih dahulu", "warning");
+          return;
+        }
+
+        // Normalisasi teks (Hapus Spasi, Ubah Jadi Huruf Besar)
+        const normalizeText = (text) => {
+          return text ? text.toString().replace(/\s+/g, "").toUpperCase() : "";
+        };
+
+        const normalizedSelectedKelas = normalizeText(kelas);
+
+        // Filter Siswa menggunakan teks yang sudah dinormalisasi
+        const students = dataSiswa.filter((s) => {
+          if (!s.kelas) return false;
+          return normalizeText(s.kelas) === normalizedSelectedKelas;
+        });
+
+        if (students.length === 0) {
+          container.innerHTML = `
+      <div style="padding:40px; text-align:center; color: var(--text-muted); border: 2px dashed #e2e8f0; border-radius: 8px;">
+        Tidak ada siswa ditemukan untuk kelas <b>${kelas}</b>.
+      </div>`;
+          return;
+        }
+
+        // Generate Tabel Input
+        let html = `
+    <table style="width:100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background:#f8fafc;">
+          <th style="padding:10px; text-align:left; border-bottom:2px solid #e2e8f0;">NISN</th>
+          <th style="padding:10px; text-align:left; border-bottom:2px solid #e2e8f0;">Nama</th>
+          <th style="padding:10px; text-align:center; border-bottom:2px solid #e2e8f0; color:var(--success);">Hadir</th>
+          <th style="padding:10px; text-align:center; border-bottom:2px solid #e2e8f0; color:var(--warning);">Sakit</th>
+          <th style="padding:10px; text-align:center; border-bottom:2px solid #e2e8f0; color:var(--info);">Izin</th>
+          <th style="padding:10px; text-align:center; border-bottom:2px solid #e2e8f0; color:var(--danger);">Alpha</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+        students.forEach((s) => {
+          html += `
+      <tr data-nisn="${s.nisn}" data-nama="${s.nama}">
+        <td style="padding:10px; border-bottom:1px solid #f1f5f9;">${s.nisn}</td>
+        <td style="padding:10px; border-bottom:1px solid #f1f5f9; font-weight:600;">${s.nama}</td>
+        <td style="text-align:center; border-bottom:1px solid #f1f5f9;">
+          <input type="radio" name="absen_${s.nisn}" value="H" checked>
+        </td>
+        <td style="text-align:center; border-bottom:1px solid #f1f5f9;">
+          <input type="radio" name="absen_${s.nisn}" value="S">
+        </td>
+        <td style="text-align:center; border-bottom:1px solid #f1f5f9;">
+          <input type="radio" name="absen_${s.nisn}" value="I">
+        </td>
+        <td style="text-align:center; border-bottom:1px solid #f1f5f9;">
+          <input type="radio" name="absen_${s.nisn}" value="A">
+        </td>
+      </tr>
+    `;
+        });
+
+        html += `
+      </tbody>
+    </table>
+    <div style="margin-top:20px; text-align:right;">
+      <button class="btn btn-primary" onclick="savePresensi('${kelas}')">
+        <i class="fas fa-save"></i> Simpan Presensi
+      </button>
+    </div>
+  `;
+
+        container.innerHTML = html;
+      }
+
+      // 2. Simpan Presensi (Versi Anti Error)
+      async function savePresensi(kelas) {
+        // Mapel sudah dropdown, ambil value-nya
+        const mapel = document.getElementById("absen-mapel").value;
+        const tanggalInput = document.getElementById("absen-tanggal").value;
+        const rows = document.querySelectorAll(
+          "#absen-input-container tbody tr"
+        );
+
+        if (!tanggalInput || !mapel) {
+          showToast("Harap isi Tanggal dan Mapel", "error");
+          return;
+        }
+
+        const attendanceData = [];
+        const dateObj = new Date(tanggalInput);
+        const hari = dateObj.toLocaleDateString("id-ID", { weekday: "long" });
+
+        let currentId = 0;
+        if (Array.isArray(dataPresensi) && dataPresensi.length > 0) {
+          try {
+            const ids = dataPresensi
+              .map((d) => parseInt(d.id))
+              .filter((id) => !isNaN(id));
+            if (ids.length > 0) {
+              currentId = Math.max(...ids);
+            }
+          } catch (err) {
+            currentId = 0;
+          }
+        }
+
+        rows.forEach((row) => {
+          const nisn = row.getAttribute("data-nisn");
+          const nama = row.getAttribute("data-nama");
+          const status = row.querySelector(
+            `input[name="absen_${nisn}"]:checked`
+          ).value;
+
+          currentId++;
+
+          attendanceData.push({
+            id: currentId,
+            nisn: nisn,
+            nama: nama,
+            kelas: kelas,
+            tanggal: tanggalInput,
+            hari: hari,
+            mapel: mapel, // Mapel sekarang dari dropdown
+            status: status,
+          });
+        });
+
+        try {
+          showToast("Menyimpan presensi...", "info");
+          const res = await sendDataToSheets("add", "presensi", attendanceData);
+
+          if (res.status === "success") {
+            showToast(
+              `Berhasil menyimpan ${attendanceData.length} data presensi.`
+            );
+            dataPresensi = dataPresensi.concat(attendanceData);
+            renderPresensiTable();
+            document.getElementById("absen-mapel").value = "";
+            document.getElementById(
+              "absen-input-container"
+            ).innerHTML = `<div style="padding:40px; text-align:center; color:var(--text-muted);">Data tersimpan. Klik Tampilkan Siswa lagi.</div>`;
+          } else {
+            showToast("Gagal: " + res.message, "error");
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("Gagal menyimpan", "error");
+        }
+      }
+
+      // 3. Render Tabel Rekap dengan Filter
+      // 3. Render Tabel Rekap dengan Filter & Statistik
+      // 3. Render Tabel Rekap dengan Filter & Statistik (Anti Error)
+      function renderPresensiTable() {
+        // PASTIKAN ELEMEN DITEMUKAN ATAU HENTIKAN FUNGSI
+        const tbody = document.querySelector("#table-presensi tbody");
+        const statsContainer = document.getElementById("rekap-stats");
+
+        // --- TAMBAHAN ANTI ERROR ---
+        if (!tbody) {
+          console.error("Element table-presensi tbody tidak ditemukan!");
+          return;
+        }
+        // -----------------------------
+
+        tbody.innerHTML = "";
+        if (statsContainer) statsContainer.innerHTML = "";
+
+        // Ambil Nilai Filter
+        // Pastikan ID filter sama dengan HTML: rekap-kelas, rekap-mapel, rekap-bulan
+        const fKelas = document.getElementById("rekap-kelas");
+        const fMapel = document.getElementById("rekap-mapel");
+        const fBulan = document.getElementById("rekap-bulan");
+
+        let valKelas = fKelas ? fKelas.value : "";
+        let valMapel = fMapel ? fMapel.value : "";
+        let valBulan = fBulan ? fBulan.value : "";
+
+        // Filter Data
+        let filteredData = dataPresensi.filter((p) => {
+          if (valKelas && p.kelas !== valKelas) return false;
+          if (valMapel && p.mapel !== valMapel) return false;
+          if (valBulan && !p.tanggal.startsWith(valBulan)) return false;
+          return true;
+        });
+
+        // --- LOGIKA BARU: HITUNG KEHADIRAN EFEKTIF ---
+        // 1. Cek apakah siswa H di hari yang sama
+        let effectiveHadirMap = {}; // Key: "nisn_tanggal", Value: true
+
+        filteredData.forEach((p) => {
+          const key = `${p.nisn}_${p.tanggal}`;
+          if (p.status === "H") {
+            effectiveHadirMap[key] = true;
+          }
+        });
+
+        // 2. Hitung Statistik Global & Per Siswa
+        let totalH = 0,
+          totalS = 0,
+          totalI = 0,
+          totalA = 0;
+        let studentStats = {}; // key: nisn, value: { total: 0, hadir: 0 }
+
+        filteredData.forEach((p) => {
+          const key = `${p.nisn}_${p.tanggal}`;
+
+          // Cek apakah di tanggal itu ada status H di mapel lain?
+          let effectiveStatus = effectiveHadirMap[key] ? "H" : p.status;
+
+          // Hitung Global
+          if (effectiveStatus === "H") totalH++;
+          else if (effectiveStatus === "S") totalS++;
+          else if (effectiveStatus === "I") totalI++;
+          else if (effectiveStatus === "A") totalA++;
+
+          // Hitung Per Siswa
+          if (!studentStats[p.nisn])
+            studentStats[p.nisn] = { total: 0, hadir: 0 };
+          studentStats[p.nisn].total++;
+          if (effectiveStatus === "H") studentStats[p.nisn].hadir++;
+        });
+
+        // Tampilkan Kartu Statistik di Atas Tabel (Style Dashboard)
+        if (statsContainer && filteredData.length > 0) {
+          statsContainer.style.display = "grid";
+          statsContainer.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-info"><h3>${totalH}</h3><p>Total Hadir</p></div>
+        <div class="stat-icon bg-green-light"><i class="fas fa-check-circle"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info"><h3>${totalS}</h3><p>Total Sakit</p></div>
+        <div class="stat-icon bg-orange-light"><i class="fas fa-procedures"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info"><h3>${totalI}</h3><p>Total Izin</p></div>
+        <div class="stat-icon bg-blue-light"><i class="fas fa-envelope-open-text"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info"><h3>${totalA}</h3><p>Total Alpha</p></div>
+        <div class="stat-icon bg-red-light"><i class="fas fa-user-times"></i></div>
+      </div>
+    `;
+        } else if (statsContainer) {
+          statsContainer.style.display = "none";
+        }
+        // ----------------------------------------------------
+
+        // Urutkan (Tanggal terbaru)
+        const sortedData = [...filteredData].sort(
+          (a, b) => new Date(b.tanggal) - new Date(a.tanggal)
+        );
+
+        if (sortedData.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Tidak ada data ditemukan</td></tr>`;
+          return;
+        }
+
+        sortedData.forEach((p, index) => {
+          let statusStyle = "color:var(--success)";
+          if (p.status === "S") statusStyle = "color:var(--warning)";
+          if (p.status === "I") statusStyle = "color:var(--info)";
+          if (p.status === "A") statusStyle = "color:var(--danger)";
+
+          // Format Tanggal
+          const dateObj = new Date(p.tanggal);
+          const dateDisplay = isNaN(dateObj.getTime())
+            ? p.tanggal
+            : dateObj.toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+
+          // Hitung Persentase
+          const sData = studentStats[p.nisn];
+          const persen = sData
+            ? ((sData.hadir / sData.total) * 100).toFixed(1)
+            : "0";
+
+          let persenColor = "color:var(--success)";
+          if (persen < 90) persenColor = "color:var(--warning)";
+          if (persen < 70) persenColor = "color:var(--danger)";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td><span class="badge badge-L">${p.kelas}</span></td>
+      <td>${p.nisn}</td>
+      <td><strong>${p.nama}</strong></td>
+      <td>
+        <div>${p.hari}</div>
+        <small style="color:var(--text-muted)">${dateDisplay}</small>
+      </td>
+      <td>${p.mapel}</td>
+      <td><strong style="${statusStyle}">${p.status}</strong></td>
+      
+      <!-- KOLOM BARU: PERSENTASE -->
+      <td><strong style="${persenColor}">${persen}%</strong></td>
+      
+      <td style="text-align: right;">
+        <button class="btn btn-info" onclick="editPresensi(${
+          p.id
+        })"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-danger" onclick="deletePresensi(${
+          p.id
+        })"><i class="fas fa-trash"></i></button>
+      </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+      // 4. Download Excel Rekap
+      function downloadPresensiToExcel() {
+        // Ambil data terfilter (logika sama dengan render)
+        const fKelas = document.getElementById("rekap-kelas").value;
+        const fMapel = document.getElementById("rekap-mapel").value;
+        const fBulan = document.getElementById("rekap-bulan").value;
+
+        let filteredData = dataPresensi.filter((p) => {
+          if (fKelas && p.kelas !== fKelas) return false;
+          if (fMapel && p.mapel !== fMapel) return false;
+          if (fBulan && !p.tanggal.startsWith(fBulan)) return false;
+          return true;
+        });
+
+        if (filteredData.length === 0) {
+          showToast("Tidak ada data untuk diunduh", "warning");
+          return;
+        }
+
+        const dataExcel = filteredData.map((d) => ({
+          No: filteredData.indexOf(d) + 1,
+          NISN: d.nisn,
+          "Nama Siswa": d.nama,
+          Kelas: d.kelas,
+          Hari: d.hari,
+          Tanggal: d.tanggal,
+          "Mata Pelajaran": d.mapel,
+          Status: d.status,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dataExcel);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+        const fileName = `Rekap_Presensi_${new Date()
+          .toISOString()
+          .slice(0, 10)}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        showToast("Berhasil download rekap");
+      }
+
+      // 5. Edit Presensi
+      function editPresensi(id) {
+        const p = dataPresensi.find((d) => d.id == id);
+        if (p) {
+          document.getElementById("edit-presensi-id").value = p.id;
+          document.getElementById("edit-presensi-nama").value = p.nama;
+          document.getElementById("edit-presensi-kelas").value = p.kelas;
+          document.getElementById("edit-presensi-tanggal").value = p.tanggal;
+          document.getElementById("edit-presensi-mapel").value = p.mapel;
+          document.getElementById("edit-presensi-status").value = p.status;
+
+          openModal("modal-presensi");
+        }
+      }
+
+      // Simpan Perubahan (Update)
+      async function updatePresensi(e) {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+
+        const id = document.getElementById("edit-presensi-id").value;
+        const tanggal = document.getElementById("edit-presensi-tanggal").value;
+        const mapel = document.getElementById("edit-presensi-mapel").value;
+        const status = document.getElementById("edit-presensi-status").value;
+
+        // Hitung Hari berdasarkan tanggal baru
+        const dateObj = new Date(tanggal);
+        const hari = dateObj.toLocaleDateString("id-ID", { weekday: "long" });
+
+        // Cari data lama untuk melengkapi payload yang tidak diubah (nisn, nama, dll)
+        const oldData = dataPresensi.find((d) => d.id == id);
+
+        const payload = {
+          id: id,
+          nisn: oldData.nisn,
+          nama: oldData.nama,
+          kelas: oldData.kelas,
+          tanggal: tanggal,
+          hari: hari,
+          mapel: mapel,
+          status: status,
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+        try {
+          const res = await sendDataToSheets("edit", "presensi", payload);
+          if (res.status === "success") {
+            showToast("Data presensi diperbarui");
+            closeModal("modal-presensi");
+            fetchDataFromSheets(); // Refresh data
+          } else {
+            showToast("Gagal: " + res.message, "error");
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("Terjadi kesalahan", "error");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      }
+
+      // 6. Hapus Presensi
+      async function deletePresensi(id) {
+        if (confirm("Hapus data presensi ini?")) {
+          const res = await sendDataToSheets("delete", "presensi", { id });
+          if (res.status === "success") {
+            showToast("Data dihapus");
+            fetchDataFromSheets();
+          }
+        }
       }
     </script>
   </body>
