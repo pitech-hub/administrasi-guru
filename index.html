@@ -295,6 +295,19 @@
         font-size: 0.9rem;
       }
 
+      /* Grid Nilai - TAMBAHAN CSS */
+      .grid-nilai {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+      }
+      .grid-nilai label {
+        display: block;
+        font-size: 0.8rem;
+        margin-bottom: 2px;
+        color: var(--text-muted);
+      }
+
       .toast-container {
         position: fixed;
         bottom: 25px;
@@ -485,6 +498,11 @@
           <a href="#" class="nav-link" onclick="nav('absensi', this)">
             <i class="fas fa-clipboard-check"></i> Daftar Hadir
           </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" onclick="nav('nilai', this)"
+            ><i class="fas fa-star"></i> Nilai Siswa</a
+          >
         </li>
       </ul>
     </aside>
@@ -1301,6 +1319,141 @@
             </div>
           </div>
         </section>
+
+        <!-- NILAI SISWA (MENU BARU) -->
+        <section id="nilai" class="page-section">
+          <div class="data-card">
+            <div class="toolbar">
+              <div
+                class="toolbar-left"
+                style="display: flex; gap: 10px; align-items: center"
+              >
+                <button class="btn btn-primary" onclick="openModalNilai()">
+                  <i class="fas fa-plus"></i> Input Nilai
+                </button>
+
+                <select
+                  id="filter-nilai-kelas"
+                  class="form-select"
+                  style="width: 150px"
+                  onchange="renderNilaiTable()"
+                >
+                  <option value="">Semua Kelas</option>
+                  <option value="7 A">7A</option>
+                  <option value="7 B">7B</option>
+                  <option value="7 C">7C</option>
+                  <option value="7 D">7D</option>
+                  <option value="7 E">7E</option>
+                  <option value="7 F">7F</option>
+                  <option value="7 G">7G</option>
+                  <option value="7 H">7H</option>
+                  <option value="7 I">7I</option>
+                  <option value="7 J">7J</option>
+                  <option value="7 K">7K</option>
+                  <option value="7 L">7L</option>
+                  <option value="7 M">7M</option>
+                  <option value="7 N">7N</option>
+                  <option value="7 O">7O</option>
+                  <option value="7 P">7P</option>
+                  <option disabled>---</option>
+                  <option value="8 A">8A</option>
+                  <option value="8 B">8B</option>
+                  <option value="8 C">8C</option>
+                  <option value="8 D">8D</option>
+                  <option value="8 E">8E</option>
+                  <option value="8 F">8F</option>
+                  <option value="8 G">8G</option>
+                  <option value="8 H">8H</option>
+                  <option value="8 I">8I</option>
+                  <option value="8 J">8J</option>
+                  <option value="8 K">8K</option>
+                  <option value="8 L">8L</option>
+                  <option value="8 M">8M</option>
+                  <option value="8 N">8N</option>
+                  <option value="8 O">8O</option>
+                  <option value="8 P">8P</option>
+                  <option disabled>---</option>
+                  <option value="9 A">9A</option>
+                  <option value="9 B">9B</option>
+                  <option value="9 C">9C</option>
+                  <option value="9 D">9D</option>
+                  <option value="9 E">9E</option>
+                  <option value="9 F">9F</option>
+                  <option value="9 G">9G</option>
+                  <option value="9 H">9H</option>
+                  <option value="9 I">9I</option>
+                  <option value="9 J">9J</option>
+                  <option value="9 K">9K</option>
+                  <option value="9 L">9L</option>
+                  <option value="9 M">9M</option>
+                  <option value="9 N">9N</option>
+                  <option value="9 O">9O</option>
+                  <option value="9 P">9P</option>
+                </select>
+
+                <select
+                  id="filter-nilai-mapel"
+                  class="form-select"
+                  style="width: 150px"
+                  onchange="renderNilaiTable()"
+                >
+                  <option value="">Semua Mapel</option>
+                  <option value="Al-Qur'an">Al-Qur'an</option>
+                  <option value="Akidah">Akidah</option>
+                  <option value="Fikih">Fikih</option>
+                  <option value="SKI">SKI</option>
+                  <option value="Matematika">Matematika</option>
+                  <option value="Bahasa Arab">Bahasa Arab</option>
+                  <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                  <option value="Bahasa Inggris">Bahasa Inggris</option>
+                  <option value="Bahasa Inggris">Bahasa Jawa</option>
+                  <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+                  <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+                  <option value="PKN">PKN</option>
+                  <option value="Seni Budaya/Prakarya">
+                    Seni Budaya/Prakarya
+                  </option>
+                  <option value="PJOK">PJOK</option>
+                  <option value="Informatika">Informatika</option>
+                </select>
+              </div>
+              <button class="btn btn-outline" onclick="exportNilaiToExcel()">
+                <i class="fas fa-file-excel"></i> Download Excel
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table id="table-nilai">
+                <thead>
+                  <tr>
+                    <th style="min-width: 150px">Nama Siswa</th>
+                    <th width="80">Kelas</th>
+                    <th width="120">Mapel</th>
+                    <th width="40">N1</th>
+                    <th width="40">N2</th>
+                    <th width="40">N3</th>
+                    <th width="40">N4</th>
+                    <th width="40">N5</th>
+                    <th width="40">N6</th>
+                    <th width="40">N7</th>
+                    <th width="40">N8</th>
+                    <th width="40">N9</th>
+                    <th width="40">N10</th>
+                    <th width="60" style="background: #dbeafe">Rata-rata</th>
+                    <th style="text-align: right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="15" style="text-align: center">
+                      Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -1568,6 +1721,250 @@
       </div>
     </div>
 
+    <!-- MODAL NILAI -->
+    <div
+      id="modal-nilai"
+      class="modal-overlay"
+      onclick="if(event.target === this) closeModal('modal-nilai')"
+    >
+      <!-- GANTI BAGIAN INI DI DALAM MODAL NILAI -->
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Input Nilai Siswa</h3>
+        </div>
+        <br />
+        <form id="form-nilai" onsubmit="saveNilai(event)">
+          <input type="hidden" id="nilai-id" />
+
+          <!-- PERUBAHAN 1: Dropdown Kelas dipindah ke atas -->
+          <div class="form-group">
+            <label class="form-label">Kelas</label>
+            <select
+              id="nilai-kelas"
+              class="form-select"
+              required
+              onchange="filterSiswaByKelas()"
+            >
+              <option value="">-- Pilih Kelas --</option>
+              <option value="7 A">7A</option>
+              <option value="7 B">7B</option>
+              <option value="7 C">7C</option>
+              <option value="7 D">7D</option>
+              <option value="7 E">7E</option>
+              <option value="7 F">7F</option>
+              <option value="7 G">7G</option>
+              <option value="7 H">7H</option>
+              <option value="7 I">7I</option>
+              <option value="7 J">7J</option>
+              <option value="7 K">7K</option>
+              <option value="7 L">7L</option>
+              <option value="7 M">7M</option>
+              <option value="7 N">7N</option>
+              <option value="7 O">7O</option>
+              <option value="7 P">7P</option>
+              <option disabled>---</option>
+              <option value="8 A">8A</option>
+              <option value="8 B">8B</option>
+              <option value="8 C">8C</option>
+              <option value="8 D">8D</option>
+              <option value="8 E">8E</option>
+              <option value="8 F">8F</option>
+              <option value="8 G">8G</option>
+              <option value="8 H">8H</option>
+              <option value="8 I">8I</option>
+              <option value="8 J">8J</option>
+              <option value="8 K">8K</option>
+              <option value="8 L">8L</option>
+              <option value="8 M">8M</option>
+              <option value="8 N">8N</option>
+              <option value="8 O">8O</option>
+              <option value="8 P">8P</option>
+              <option disabled>---</option>
+              <option value="9 A">9A</option>
+              <option value="9 B">9B</option>
+              <option value="9 C">9C</option>
+              <option value="9 D">9D</option>
+              <option value="9 E">9E</option>
+              <option value="9 F">9F</option>
+              <option value="9 G">9G</option>
+              <option value="9 H">9H</option>
+              <option value="9 I">9I</option>
+              <option value="9 J">9J</option>
+              <option value="9 K">9K</option>
+              <option value="9 L">9L</option>
+              <option value="9 M">9M</option>
+              <option value="9 N">9N</option>
+              <option value="9 O">9O</option>
+              <option value="9 P">9P</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Siswa</label>
+            <!-- onchange="autoFillKelasFromNilai()" dihapus karena kelas sudah dipilih manual -->
+            <select id="nilai-nisn" class="form-select" required>
+              <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
+            </select>
+          </div>
+
+          <!-- Sisa form (Mapel, Nilai N1-N10, dll) tetap sama seperti sebelumnya... -->
+          <div class="form-group">
+            <label class="form-label">Mata Pelajaran</label>
+            <select id="nilai-mapel" class="form-select" required>
+              <option value="">-- Pilih Mapel --</option>
+              <option value="Al-Qur'an">Al-Qur'an</option>
+              <option value="Akidah">Akidah</option>
+              <option value="Fikih">Fikih</option>
+              <option value="SKI">SKI</option>
+              <option value="Matematika">Matematika</option>
+              <option value="Bahasa Arab">Bahasa Arab</option>
+              <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+              <option value="Bahasa Inggris">Bahasa Inggris</option>
+              <option value="Bahasa Jawa">Bahasa Jawa</option>
+              <option value="IPA">Ilmu Pengetahuan Alam (IPA)</option>
+              <option value="IPS">Ilmu Pengetahuan Sosial (IPS)</option>
+              <option value="PKN">PKN</option>
+              <option value="Seni Budaya/Prakarya">Seni Budaya/Prakarya</option>
+              <option value="PJOK">PJOK</option>
+              <option value="Informatika">Informatika</option>
+            </select>
+          </div>
+
+          <!-- ... (Lanjutkan grid nilai N1-N10 yang sudah ada) ... -->
+
+          <label
+            class="form-label"
+            style="
+              margin-top: 10px;
+              font-weight: bold;
+              border-bottom: 1px solid #ddd;
+            "
+            >Nilai Tugas / UH (N1 - N10)</label
+          >
+
+          <div class="grid-nilai" style="margin-top: 10px">
+            <div>
+              <label>N1</label
+              ><input
+                type="number"
+                id="nilai-n1"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N2</label
+              ><input
+                type="number"
+                id="nilai-n2"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N3</label
+              ><input
+                type="number"
+                id="nilai-n3"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N4</label
+              ><input
+                type="number"
+                id="nilai-n4"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N5</label
+              ><input
+                type="number"
+                id="nilai-n5"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N6</label
+              ><input
+                type="number"
+                id="nilai-n6"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N7</label
+              ><input
+                type="number"
+                id="nilai-n7"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N8</label
+              ><input
+                type="number"
+                id="nilai-n8"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N9</label
+              ><input
+                type="number"
+                id="nilai-n9"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+            <div>
+              <label>N10</label
+              ><input
+                type="number"
+                id="nilai-n10"
+                class="form-control"
+                oninput="hitungRataRataModal()"
+              />
+            </div>
+          </div>
+
+          <div
+            style="
+              margin-top: 15px;
+              background: #eff6ff;
+              padding: 10px;
+              border-radius: 8px;
+              text-align: center;
+            "
+          >
+            <span style="font-size: 0.9rem; color: var(--text-muted)"
+              >Rata-rata Sementara:</span
+            >
+            <strong
+              id="nilai-rata-display"
+              style="font-size: 1.2rem; color: var(--primary)"
+              >0</strong
+            >
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="width: 100%; margin-top: 20px"
+          >
+            Simpan Data
+          </button>
+        </form>
+      </div>
+    </div>
+
     <div class="toast-container" id="toast-area"></div>
 
     <script>
@@ -1576,13 +1973,14 @@
       // ==========================================
       // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI LANGKAH 2
       const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbz2c3z_q1F9DtuUEhrwajNizPkWNcULXH9_ReQedKfYorxqVWobfoc94qWBQBZGaAWp/exec";
+        "https://script.google.com/macros/s/AKfycbzt2Kug5Pt4cpSfyfL-M2rdhzlroszpiLzEWTsnem4yVd4f3VHQdKGLUHVsqpgIImfZ/exec";
       // ==========================================
 
       let dataGuru = [];
       let dataSiswa = [];
       let dataJurnal = [];
       let dataPresensi = [];
+      let dataNilai = [];
 
       // --- FUNGSI UMUM UI ---
       function toggleSidebar() {
@@ -1711,6 +2109,17 @@
           if (jsonPresensi.status === "success")
             dataPresensi = jsonPresensi.data;
           renderPresensiTable();
+
+          // Fetch Nilai (FIXED: Ini yang kurang tadi)
+          const resNilai = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "read", type: "nilai" }),
+          });
+          const jsonNilai = await resNilai.json();
+          if (jsonNilai.status === "success") {
+            dataNilai = jsonNilai.data;
+            renderNilaiTable();
+          }
 
           showToast("Sinkronisasi Selesai");
         } catch (error) {
@@ -2794,6 +3203,247 @@
             fetchDataFromSheets();
           }
         }
+      }
+
+      //
+
+      // --- LOGIKA NILAI (MENU BARU) ---
+      function renderNilaiTable() {
+        const tbody = document.querySelector("#table-nilai tbody");
+        tbody.innerHTML = "";
+
+        const fKelas = document.getElementById("filter-nilai-kelas").value;
+        const fMapel = document.getElementById("filter-nilai-mapel").value;
+
+        const filtered = dataNilai.filter((n) => {
+          if (fKelas && n.kelas !== fKelas) return false;
+          if (fMapel && n.mapel !== fMapel) return false;
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="15" style="text-align:center">Tidak ada data nilai</td></tr>`;
+          return;
+        }
+
+        filtered.forEach((n) => {
+          const tr = document.createElement("tr");
+          // Generate Cells N1-N10
+          let nilaiCells = "";
+          for (let i = 1; i <= 10; i++) {
+            let val = n[`n${i}`] || "";
+            val =
+              val !== "" ? `<span class="badge badge-L">${val}</span>` : "-";
+            nilaiCells += `<td>${val}</td>`;
+          }
+
+          // Format Rata-rata
+          const rata = parseFloat(n.rata_rata).toFixed(2);
+
+          tr.innerHTML = `
+                <td><strong>${n.nama}</strong><br><small style="color:#888">${n.nisn}</small></td>
+                <td>${n.kelas}</td>
+                <td>${n.mapel}</td>
+                ${nilaiCells}
+                <td style="background:#eff6ff; font-weight:bold;">${rata}</td>
+                <td style="text-align:right">
+                    <button class="btn btn-info" onclick="editNilai(${n.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger" onclick="deleteNilai(${n.id})"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- FUNGSI BARU: Filter Siswa Berdasarkan Kelas ---
+      function filterSiswaByKelas() {
+        const selectedKelas = document.getElementById("nilai-kelas").value;
+        const selNama = document.getElementById("nilai-nisn");
+
+        // Reset dropdown nama
+        selNama.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+
+        if (!selectedKelas) return; // Jika kelas belum dipilih, stop di sini
+
+        // Filter data siswa sesuai kelas yang dipilih
+        const filteredSiswa = dataSiswa.filter(
+          (s) => s.kelas === selectedKelas
+        );
+
+        // Isi dropdown nama (menggunakan teknik cepat map/join)
+        const options = filteredSiswa
+          .map((s) => `<option value="${s.nisn}">${s.nama}</option>`)
+          .join("");
+
+        selNama.innerHTML += options;
+      }
+
+      // --- UPDATE: Open Modal Nilai ---
+      function openModalNilai() {
+        document.getElementById("modal-nilai").classList.add("open");
+        document.getElementById("form-nilai").reset();
+        document.getElementById("nilai-id").value = "";
+        document.getElementById("nilai-rata-display").innerText = "0";
+
+        // 1. Ambil daftar Kelas Unik dari Data Siswa (Agar fleksibel)
+        // Menggunakan Set untuk menghapus duplikat kelas
+        const uniqueKelas = [...new Set(dataSiswa.map((s) => s.kelas))].sort();
+
+        // 2. Isi Dropdown Kelas
+        const selKelas = document.getElementById("nilai-kelas");
+        // Buat opsi HTML dengan cepat
+        // const kelasOptions = uniqueKelas
+        //   .map((k) => `<option value="${k}">${k}</option>`)
+        //   .join("");
+        // selKelas.innerHTML =
+        //   '<option value="">-- Pilih Kelas --</option>' + kelasOptions;
+
+        // 3. Reset Dropdown Nama Siswa
+        document.getElementById("nilai-nisn").innerHTML =
+          '<option value="">-- Pilih Kelas Terlebih Dahulu --</option>';
+      }
+
+      // --- UPDATE: Save Nilai ---
+      // Kita perlu sedikit menyesuaikan fungsi saveNilai agar membaca kelas dari dropdown, bukan dari auto-fill.
+      async function saveNilai(e) {
+        e.preventDefault();
+
+        // Ambil elemen tombol loading (kode perbaikan sebelumnya)
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+        const id = document.getElementById("nilai-id").value;
+        const nisn = document.getElementById("nilai-nisn").value;
+        const kelas = document.getElementById("nilai-kelas").value; // Ambil kelas dari dropdown
+        const siswa = dataSiswa.find((s) => s.nisn == nisn);
+
+        let payload = {
+          nisn: nisn,
+          nama: siswa ? siswa.nama : "-", // Cek keamanan jika siswa null
+          kelas: kelas, // Langsung ambil dari dropdown kelas
+          mapel: document.getElementById("nilai-mapel").value,
+          rata_rata: hitungRataRataModal(),
+        };
+
+        for (let i = 1; i <= 10; i++) {
+          payload[`n${i}`] = document.getElementById(`nilai-n${i}`).value;
+        }
+
+        let finalId = id;
+        if (!finalId)
+          finalId = dataNilai.length
+            ? Math.max(...dataNilai.map((d) => d.id)) + 1
+            : 1;
+        payload.id = finalId;
+
+        try {
+          const res = await sendDataToSheets(
+            id ? "edit" : "add",
+            "nilai",
+            payload
+          );
+          if (res.status === "success") {
+            showToast("Nilai tersimpan");
+            closeModal("modal-nilai");
+            fetchDataFromSheets();
+          } else {
+            showToast("Gagal: " + res.message, "error");
+          }
+        } catch (error) {
+          console.error(error);
+          showToast("Terjadi kesalahan koneksi", "error");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      }
+
+      function autoFillKelasFromNilai() {
+        const nisn = document.getElementById("nilai-nisn").value;
+        const siswa = dataSiswa.find((s) => s.nisn == nisn);
+        if (siswa) document.getElementById("nilai-kelas").value = siswa.kelas;
+      }
+
+      function hitungRataRataModal() {
+        let total = 0;
+        let count = 0;
+        for (let i = 1; i <= 10; i++) {
+          const val = document.getElementById(`nilai-n${i}`).value;
+          if (val !== "" && !isNaN(val)) {
+            total += parseFloat(val);
+            count++;
+          }
+        }
+        const rata = count > 0 ? (total / count).toFixed(2) : 0;
+        document.getElementById("nilai-rata-display").innerText = rata;
+        return rata;
+      }
+
+      function editNilai(id) {
+        const n = dataNilai.find((d) => d.id == id);
+        if (n) {
+          openModalNilai();
+          document.getElementById("nilai-id").value = n.id;
+          document.getElementById("nilai-nisn").value = n.nisn;
+          autoFillKelasFromNilai();
+          document.getElementById("nilai-mapel").value = n.mapel;
+
+          // Isi N1-N10
+          for (let i = 1; i <= 10; i++) {
+            document.getElementById(`nilai-n${i}`).value = n[`n${i}`] || "";
+          }
+          hitungRataRataModal();
+        }
+      }
+
+      async function deleteNilai(id) {
+        if (confirm("Hapus nilai ini?")) {
+          const res = await sendDataToSheets("delete", "nilai", { id });
+          if (res.status === "success") fetchDataFromSheets();
+        }
+      }
+
+      function exportNilaiToExcel() {
+        // Filter Logic Sama dengan Render
+        const fKelas = document.getElementById("filter-nilai-kelas").value;
+        const fMapel = document.getElementById("filter-nilai-mapel").value;
+        const filtered = dataNilai.filter((n) => {
+          if (fKelas && n.kelas !== fKelas) return false;
+          if (fMapel && n.mapel !== fMapel) return false;
+          return true;
+        });
+
+        if (filtered.length === 0)
+          return showToast("Tidak ada data", "warning");
+
+        const dataExcel = filtered.map((d) => ({
+          NISN: d.nisn,
+          Nama: d.nama,
+          Kelas: d.kelas,
+          Mapel: d.mapel,
+          N1: d.n1,
+          N2: d.n2,
+          N3: d.n3,
+          N4: d.n4,
+          N5: d.n5,
+          N6: d.n6,
+          N7: d.n7,
+          N8: d.n8,
+          N9: d.n9,
+          N10: d.n10,
+          "Rata-rata": d.rata_rata,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dataExcel);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Nilai");
+        XLSX.writeFile(
+          wb,
+          `Nilai_Siswa_${new Date().toISOString().slice(0, 10)}.xlsx`
+        );
       }
     </script>
   </body>
