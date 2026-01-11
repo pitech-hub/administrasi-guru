@@ -44,6 +44,7 @@
       }
 
       /* --- LOGIN PAGE STYLES (BARU) --- */
+
       #login-screen {
         position: fixed;
         top: 0;
@@ -67,10 +68,16 @@
         text-align: center;
       }
 
+      /* Tambahan Style Logo Login */
       .login-logo {
-        font-size: 3rem;
-        color: var(--primary);
-        margin-bottom: 10px;
+        width: 90px; /* Ukuran Logo */
+        height: 90px;
+        object-fit: contain;
+        margin-bottom: 1rem; /* Jarak ke bawah */
+        border-radius: 50%; /* Membuat logo bulat, hapus jika ingin kotak */
+        background: white; /* Background putih di belakang logo transparan */
+        padding: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       }
 
       .login-title {
@@ -568,12 +575,12 @@
     <!-- === BAGIAN 1: HALAMAN LOGIN === -->
     <div id="login-screen">
       <div class="login-card">
-        <div class="login-logo">
-          <i class="fas fa-school"></i>
-        </div>
-        <h2 class="login-title">MTsN 1 Lamongan</h2>
-        <p class="login-subtitle">Silakan login</p>
-
+        <img src="logo.jpg" class="login-logo" alt="Logo MTs" />
+        <h2 class="login-title">MTs Negeri 1 Lamongan</h2>
+        <p style="color: #666; font-weight: 500; margin-bottom: 0">
+          Sistem Administrasi Guru
+        </p>
+        <br />
         <form class="login-form" onsubmit="handleLogin(event)">
           <div class="form-group">
             <div class="login-input-group">
@@ -665,7 +672,7 @@
             class="user-profile"
             style="display: flex; align-items: center; gap: 10px"
           >
-            <span>Admin</span>
+            <!-- <span>Admin</span> -->
             <!-- Tombol Logout Baru -->
             <button
               class="btn btn-outline"
