@@ -691,13 +691,141 @@
 
         <main class="content">
           <!-- DASHBOARD -->
+          <!-- DASHBOARD -->
           <section id="dashboard" class="page-section active">
+            <!-- KOTAK STATISTIK RINGKAS -->
+            <div class="stats-grid" style="margin-bottom: 20px">
+              <!-- Total Guru -->
+              <div class="stat-card">
+                <div class="stat-info">
+                  <h3 id="dash-count-guru">0</h3>
+                  <p>Total Guru</p>
+                </div>
+                <div class="stat-icon bg-blue-light">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+              </div>
+
+              <!-- Total Siswa -->
+              <div class="stat-card">
+                <div class="stat-info">
+                  <h3 id="dash-count-siswa">0</h3>
+                  <p>Total Siswa</p>
+                </div>
+                <div class="stat-icon bg-green-light">
+                  <i class="fas fa-user-graduate"></i>
+                </div>
+              </div>
+
+              <!-- Total Jurnal -->
+              <div class="stat-card">
+                <div class="stat-info">
+                  <h3 id="dash-count-jurnal">0</h3>
+                  <p>Total Jurnal</p>
+                </div>
+                <div class="stat-icon bg-orange-light">
+                  <i class="fas fa-book-open"></i>
+                </div>
+              </div>
+
+              <!-- Total Presensi -->
+              <div class="stat-card">
+                <div class="stat-info">
+                  <h3 id="dash-count-presensi">0</h3>
+                  <p>Total Presensi</p>
+                </div>
+                <div class="stat-icon bg-red-light">
+                  <i class="fas fa-clipboard-check"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- JURNAL TERBARU -->
             <div class="data-card">
-              <h4>Selamat Datang</h4>
-              <p>Sistem terhubung ke Google Sheets sebagai database utama.</p>
-              <br />
-              <button class="btn btn-primary" onclick="fetchDataFromSheets()">
-                <i class="fas fa-sync"></i> Refresh Data dari Sheets
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 15px;
+                "
+              >
+                <h4>📅 Jurnal Terbaru</h4>
+                <button
+                  class="btn btn-outline"
+                  onclick="nav('jurnal', null)"
+                  style="font-size: 0.8rem; padding: 6px 10px"
+                >
+                  Lihat Semua
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table id="dashboard-table-jurnal">
+                  <thead>
+                    <tr>
+                      <th>Tanggal</th>
+                      <th>Guru</th>
+                      <th>Kelas</th>
+                      <th>Mapel</th>
+                      <th>Kegiatan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="6" style="text-align: center; color: #888">
+                        Memuat data...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- PRESENSI TERBARU -->
+            <div class="data-card">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 15px;
+                "
+              >
+                <h4>📋 Presensi Terbaru</h4>
+                <button
+                  class="btn btn-outline"
+                  onclick="nav('absensi', null)"
+                  style="font-size: 0.8rem; padding: 6px 10px"
+                >
+                  Lihat Semua
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table id="dashboard-table-presensi">
+                  <thead>
+                    <tr>
+                      <th>Tanggal</th>
+                      <th>Nama Siswa</th>
+                      <th>Kelas</th>
+                      <th>Mapel</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="6" style="text-align: center; color: #888">
+                        Memuat data...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- TOMBOL MANUAL REFRESH (Opsional, karena otomatis saat login) -->
+            <div style="text-align: center; margin-top: 20px">
+              <button class="btn btn-outline" onclick="fetchDataFromSheets()">
+                <i class="fas fa-sync"></i> Refresh
               </button>
             </div>
           </section>
@@ -2362,6 +2490,7 @@
           }
 
           showToast("Sinkronisasi Selesai");
+          renderDashboard();
         } catch (error) {
           console.error(error);
           showToast("Gagal koneksi ke Google Sheets", "error");
@@ -3684,6 +3813,97 @@
           wb,
           `Nilai_Siswa_${new Date().toISOString().slice(0, 10)}.xlsx`
         );
+      }
+
+      function renderDashboard() {
+        // 1. Update Angka Statistik
+        document.getElementById("dash-count-guru").innerText = dataGuru.length;
+        document.getElementById("dash-count-siswa").innerText =
+          dataSiswa.length;
+        document.getElementById("dash-count-jurnal").innerText =
+          dataJurnal.length;
+        document.getElementById("dash-count-presensi").innerText =
+          dataPresensi.length;
+
+        // 2. Render Jurnal Terbaru (Ambil 5 data terbaru diurutkan tanggal)
+        const sortedJurnal = [...dataJurnal].sort(
+          (a, b) => new Date(b.tanggal) - new Date(a.tanggal)
+        );
+        const recentJurnal = sortedJurnal.slice(0, 5); // Ambil 5 teratas
+
+        const tbodyJurnal = document.querySelector(
+          "#dashboard-table-jurnal tbody"
+        );
+        tbodyJurnal.innerHTML = "";
+
+        if (recentJurnal.length > 0) {
+          recentJurnal.forEach((j) => {
+            const tr = document.createElement("tr");
+            // Format Tanggal Singkat
+            const dateObj = new Date(j.tanggal);
+            const dateDisplay = isNaN(dateObj.getTime())
+              ? j.tanggal
+              : dateObj.toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                });
+
+            tr.innerHTML = `
+        <td>${dateDisplay}</td>
+        <td>${j.guru}</td>
+        <td><span class="badge badge-L">${j.kelas}</span></td>
+        <td>${j.mapel}</td>
+        <td><small>${j.materi.substring(0, 30)}...</small></td>
+      `;
+            tbodyJurnal.appendChild(tr);
+          });
+        } else {
+          tbodyJurnal.innerHTML = `<tr><td colspan="6" style="text-align: center; color:#888;">Belum ada data jurnal</td></tr>`;
+        }
+
+        // 3. Render Presensi Terbaru (Ambil 5 data terbaru)
+        const sortedPresensi = [...dataPresensi].sort(
+          (a, b) => new Date(b.tanggal) - new Date(a.tanggal)
+        );
+        const recentPresensi = sortedPresensi.slice(0, 5);
+
+        const tbodyPresensi = document.querySelector(
+          "#dashboard-table-presensi tbody"
+        );
+        tbodyPresensi.innerHTML = "";
+
+        if (recentPresensi.length > 0) {
+          recentPresensi.forEach((p) => {
+            const tr = document.createElement("tr");
+
+            // Warna Status
+            let statusColor = "var(--success)";
+            if (p.status === "S") statusColor = "var(--warning)";
+            if (p.status === "I") statusColor = "var(--info)";
+            if (p.status === "A") statusColor = "var(--danger)";
+
+            const dateObj = new Date(p.tanggal);
+            const dateDisplay = isNaN(dateObj.getTime())
+              ? p.tanggal
+              : dateObj.toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                });
+
+            tr.innerHTML = `
+        <td>${dateDisplay}</td>
+        <td><strong>${p.nama}</strong></td>
+        <td><span class="badge badge-L">${p.kelas}</span></td>
+        <td>${p.mapel}</td>
+        <td><strong style="color:${statusColor}">${p.status}</strong></td>
+      `;
+            tbodyPresensi.appendChild(tr);
+          });
+        } else {
+          tbodyPresensi.innerHTML = `<tr><td colspan="6" style="text-align: center; color:#888;">Belum ada data presensi</td></tr>`;
+        }
       }
     </script>
   </body>
